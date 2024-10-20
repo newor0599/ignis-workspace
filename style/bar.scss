@@ -1,0 +1,32 @@
+@import "workspace_indicator";
+$main: #030;
+$border-radius: 10px;
+
+
+*{
+  all:unset;
+}
+
+label{
+  line-height: 1;
+  /* margin-top: -20px; */
+}
+
+.bar.trigger{
+  background: #000000ff;
+  padding-top: 5px;
+}
+
+.bar.left{
+  background: $main;
+  padding: 5px;
+  border-top-right-radius: $border-radius;
+  font-size: 70px;
+  font-family: 'Ndot';
+}
+
+.bar.center{
+  background: $main;
+  border-top-right-radius: $border-radius;
+  border-top-left-radius: $border-radius;
+}

@@ -1,0 +1,15 @@
+$active: #aaf;
+$deactive: #faf;
+
+.workspace-indicator{
+  min-width: 20px;
+  min-height: 20px;
+  background: $deactive;
+  transition: .3s ease-out;
+  border-radius: 99px;
+  margin: 5px;
+  &.active{
+    background: $active;
+    min-width: 40px;
+  }
+}

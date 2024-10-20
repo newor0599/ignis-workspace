@@ -1,0 +1,17 @@
+.empty.frame{
+  background: #304;
+  border-radius: 20px;
+  color: #aaa;
+  border:none;
+  font-size: 210px;
+  font-family: "Storopia";
+  padding:20px;
+  transition: .3s ease-out;
+  &.hover{
+    font-size: 220px;
+  }
+}
+.empty.frame>label{
+  line-height: 0.7;
+  margin-top: -20px;
+}
