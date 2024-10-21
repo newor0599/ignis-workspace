@@ -15,9 +15,20 @@
   background: #120;
   padding: 10px;
   margin: 10px;
+  &.connected.paired{
+    background: #f91;
+  }
+  &.paired{
+    background: #222;
+  }
 }
 
 .bt.test{
   background: #419;
   padding: 20px;
+}
+
+.bt.scan-button{
+  padding:10px;
+  font-size: 40px;
 }

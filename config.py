@@ -1,6 +1,7 @@
 import sys
 import os
 from ignis.app import IgnisApp
+from ignis.widgets import Widget
 
 style_path = os.path.expanduser("~/.config/ignis/main.scss")
 

@@ -1,41 +1,83 @@
+from gi.types import nothing
 from ignis.base_service import BaseService
 from ignis.utils import Utils
-from bleak import BleakScanner as scanner
 from gi.repository import GObject  # type: ignore
-import asyncio
+from bluetool import Bluetooth
+
+"""
+Bluetooth Service
+
+Requires [bluetool](https://github.com/newor0599/bluetool)
+
+Properties:
+    - **devices** (``list[dict[str,str]]``, read-only): A list of nearby bluetooth devices
+    - **connected_devices** (``list[dict[str,str]]``, read-only): A list of current connected devices
+    - **paired_devices** (``list[dict[str,str]]``, read-only): A list of paired devices
+    """
 
 
 class BluetoothService(BaseService):
     def __init__(self) -> None:
         super().__init__()
-        self.scanned_devices:list[dict] = []
-        self.raw_scanned_devices:list = []
+        self.bt = Bluetooth()
+        self._devices = []
         self._scanning = False
-
-    async def scan_async(self) -> None:
-        self._scanning = True
-        self.notify('scanning')
-        self.raw_scanned_devices = await scanner().discover()
-        self._scanning = False
-
+        self._old_devices = []
+    
     @Utils.run_in_thread
-    def scan(self)->list:
-        asyncio.run(self.scan_async()) 
-        devices = []
-        for i in self.raw_scanned_devices:
-            device = str(i).split(": ")
-            devices.append({
-                'name':device[1],
-                'address':device[0]
-                })
-        self.scanned_devices = devices
-        self.set_property("devices",self.scanned_devices)
-        return devices
+    def scan_devices(self):
+        if self._scanning:
+            return
+        print("scanning")
+        self._scanning = True
+        self.bt.scan(2)
+        self._devices = self.bt.get_available_devices()
+
+        for i in range(len(self._devices)):
+            self._devices[i].update({"connected":False,"paired":False})
+
+        for connected in self.bt.get_connected_devices():
+            for i,device in enumerate(self._devices):
+                if device['mac_address'] == connected["mac_address"]:
+                    self._devices[i].update({"connected":True})
+
+        for paired in self.bt.get_paired_devices():
+            for i,device in enumerate(self._devices):
+                if device['mac_address'] == paired["mac_address"]:
+                    self._devices[i].update({"paired":True})
+        self._scanning = False
+        self.notify("devices")
+
+    def connect_device(self,device:dict) -> None:
+        print("Connecting to",device['name'])
+        address = device['mac_address'].decode("utf-8")
+        if not device['paired']:
+            print("Device is not paired, trusting and pairing")
+            self.bt.trust(address)
+            self.bt.pair(address)
+            print(self.bt.trust(address))
+            print(self.bt.pair(address))
+        print("Connecting now")
+        self.bt.connect(address)
+        print("Device Connected")
+        device.update({'connected':True})
+        if self._old_devices != self.bt.get_available_devices():
+            self._old_devices = self.bt.get_available_devices()
+            self.notify("devices")
+        # return device
 
     @GObject.Property
-    def devices(self)->list:
-        return self.scanned_devices
+    def devices(self) -> list:
+        return self._devices
 
     @GObject.Property
-    def scanning(self)->bool:
-        return self._scanning
+    def connected_devices(self) -> list[dict]:
+        return self.bt.get_connected_devices()
+
+    @GObject.Property
+    def paired_devices(self) -> list[dict]:
+        return self.bt.get_paired_devices()
+
+    @GObject.Property
+    def get_scanning(self) -> bool:
+        return self.bt.get_scanning()
