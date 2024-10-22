@@ -1,4 +1,3 @@
-from ignis.app import IgnisApp
 from ignis.widgets import Widget
 from bluetooth import BluetoothService
 bt = BluetoothService()
@@ -29,12 +28,12 @@ def update_menu():
 
 Widget.Window(
         namespace="Bluetooth Menu",
-        anchor = ['left','top','bottom'],
+        anchor = ['right','top','bottom'],
         layer = 'background',
         exclusivity='normal',
-        css_classes = ['bt','window'],
         child = Widget.Box(
             vertical = True,
+            css_classes = ['bt','window'],
             child = [
                 bluetooth_menu,
                 Widget.Button(
