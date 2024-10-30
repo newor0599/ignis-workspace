@@ -30,6 +30,11 @@ main_connection_menu = Widget.Box(
     ]
 )
 
+def toggle_connection_menu():
+    main_connection_menu.child[0].set_reveal_child(not main_connection_menu.child[0].reveal_child)
+    if main_connection_menu.child[0].reveal_child:
+        bt_menu._scan()
+
 bar = Widget.CenterBox(
         css_classes=['bar','main'],
         hexpand = True,
@@ -52,7 +57,7 @@ bar = Widget.CenterBox(
                 Widget.Button(
                     css_classes = ['bar','bt','trigger'],
                     child = Widget.Label(label = "󰂯"),
-                    on_click = lambda x: main_connection_menu.child[0].set_reveal_child(not main_connection_menu.child[0].reveal_child)
+                    on_click = lambda x: toggle_connection_menu()
                     )
                 ]
             )
@@ -79,8 +84,6 @@ bar_main = Widget.Box(
             ),
             ]
         )
-
-
 
 Widget.Window(
     namespace="Taskbar",

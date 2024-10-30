@@ -27,7 +27,6 @@ class BluetoothService(BaseService):
     def scan_devices(self):
         if self._scanning:
             return
-        print("scanning")
         self._scanning = True
         self.bt.scan(2)
         self._devices = self.bt.get_available_devices()

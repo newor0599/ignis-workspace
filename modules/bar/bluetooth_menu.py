@@ -1,9 +1,16 @@
 from ignis.widgets import Widget
 from bluetooth import BluetoothService
+from ignis.utils import Utils
 
 
 class BluetoothMenu(Widget.Box):
     def __init__(self):
+        self.indicator = Widget.Box(
+                css_classes = ['bt','scanning-indicator'],
+                child = [
+                    Widget.Label(label = "Scanning for bluetooth devices"),
+                    ]
+                )
         self.bluetooth_menu = Widget.Box(
                 vertical = True
                 )
@@ -20,15 +27,25 @@ class BluetoothMenu(Widget.Box):
                 child = [
                     self.bluetooth_scroll,
                     Widget.Button(
-                        on_click = lambda x:self.bt.scan_devices(),
+                        on_click = lambda x:self._scan(),
                         child = Widget.Label(label = "Scan"),
                         css_classes = ['bt','scan-button'],
                         )
                     ]
                 )
 
+    def _scan(self):
+        print("Scanning")
+        self.scanning_indicator()
+        self.bt.scan_devices()
+
+    def scanning_indicator(self):
+        devices = self.bluetooth_menu.child
+        print(devices)
+        devices.insert(0,self.indicator)
+        self.bluetooth_menu.set_child(devices)
+
     def update_menu(self):
-        print("Updating bluetooth menu")
         device_selections = []
         for i in self.bt.devices:
             name = i['name'].decode('utf-8')
@@ -44,4 +61,3 @@ class BluetoothMenu(Widget.Box):
                     )
 
         self.bluetooth_menu.set_child(device_selections)
-        print("Update complete")
