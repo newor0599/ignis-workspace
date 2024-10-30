@@ -6,10 +6,9 @@
   font-size: 210px;
   font-family: "Storopia";
   padding:20px;
-  transition: .3s ease-out;
-  /* &.hover{ */
-  /*   font-size: 220px; */
-  /* } */
+  &.hover{
+    font-size: 230px;
+  }
 }
 .empty.frame>label{
   line-height: 0.7;
