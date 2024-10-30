@@ -3,14 +3,15 @@
 }
 
 .bt.window{
-  background-color: #ada;
+  background-color: $background-light;
   padding: 10px;
   margin: 10px;
+  border-radius: $border-radius;
 }
 
 
 .bt.main{
-  background: #999;
+  background: $background;
   padding: 10px;
   min-height: 200px;
   border-radius: 10px;
@@ -18,26 +19,32 @@
 }
 
 .bt.device{
-  background: #810;
+  background: $accent;
   padding: 10px;
   margin: 10px 0px;
   color: #fff;
+  font-family: 'Storopia';
+  /* font-size: 20px; */
+  border-radius: $border-radius;
   &.connected.paired{
-    background: #f91;
+    background: $accent-dark;
   }
   &.paired{
-    background: #222;
+    background: $accent-light;
   }
 }
 
 .bt.scan-button{
   padding:10px;
   font-size: 40px;
-  background: #5f4;
-  margin: 10px;
+  background: $accent;
+  margin-top: 10px;
+  border-radius: $border-radius;
+  font-family: 'Ndot';
 }
 
 .bt.scanning-indicator{
-  color: #203;
-  background: #4a1;
+  color: #ddd;
+  padding: 10px;
+  font-family: 'Storopia';
 }

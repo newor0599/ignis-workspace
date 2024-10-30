@@ -1,7 +1,5 @@
 from ignis.widgets import Widget
 from bluetooth import BluetoothService
-from ignis.utils import Utils
-
 
 class BluetoothMenu(Widget.Box):
     def __init__(self):

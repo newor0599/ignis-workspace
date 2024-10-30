@@ -1,7 +1,7 @@
 .empty.frame{
-  background: #304;
-  border-radius: 20px;
-  color: #aaa;
+  background: $background;
+  border-radius: $border-radius;
+  color: $accent;
   border:none;
   font-size: 210px;
   font-family: "Storopia";

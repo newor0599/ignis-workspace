@@ -23,10 +23,10 @@ bt_menu = BluetoothMenu()
 main_connection_menu = Widget.Box(
     halign = 'end',
     child = [
-            Widget.Revealer(
-                child = bt_menu,
-                transition_type = 'slide_up'
-        )
+        Widget.Revealer(
+            child = bt_menu,
+            transition_type = 'slide_up'
+        ),
     ]
 )
 

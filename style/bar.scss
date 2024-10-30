@@ -1,7 +1,4 @@
 @import "workspace_indicator";
-$main: #030;
-$border-radius: 10px;
-
 
 *{
   all:unset;
@@ -18,23 +15,29 @@ label{
 }
 
 .bar.left{
-  background: $main;
-  padding: 5px;
+  background: $background;
+  padding: 0px 20px;
   border-top-right-radius: $border-radius;
-  font-size: 70px;
+  font-size: 40px;
   font-family: 'Ndot';
 }
 
 .bar.center{
-  background: $main;
+  background: $background;
   border-top-right-radius: $border-radius;
+  border-top-left-radius: $border-radius;
+  padding: 5px;
+}
+
+.bar.right{
+  background-color: $background;
   border-top-left-radius: $border-radius;
 }
 
 button.bar.trigger{
-  background-color: #304;
+  background-color: $background-dark;
   padding: 10px;
-  margin: 20px;
+  margin: 5px;
   border-radius: 99px;
   >label{
     margin: 0px 5px;
