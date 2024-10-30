@@ -1,4 +1,4 @@
 # Ignis based workspace
 
-<img src="preview/v0.22.png">
+<img src="preview/v0.3.png">
 This is still in work at progress
