@@ -69,6 +69,10 @@ class BluetoothService(BaseService):
             self.notify("devices")
         # return device
 
+    def disconnect_device(self,device:dict) -> None:
+        self.bt.disconnect(device['mac_address'].decode("utf-8"))
+        self.notify("devices")
+
     @GObject.Property
     def devices(self) -> list:
         devices_sort = sorted(self._devices,key=lambda x:x['paired'],reverse=True)

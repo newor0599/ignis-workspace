@@ -24,6 +24,7 @@
   margin: 10px 0px;
   color: #fff;
   font-family: 'Storopia';
+  transition: .3s ease;
   /* font-size: 20px; */
   border-radius: $border-radius;
   &.connected.paired{
@@ -31,6 +32,9 @@
   }
   &.paired{
     background: $accent-light;
+  }
+  &.hover{
+    opacity: .8;
   }
 }
 
@@ -45,6 +49,5 @@
 
 .bt.scanning-indicator{
   color: #ddd;
-  padding: 10px;
   font-family: 'Storopia';
 }

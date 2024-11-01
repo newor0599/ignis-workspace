@@ -11,13 +11,11 @@ hypr = HyprlandService()
 file_dir,file_name = os.path.split(os.path.abspath(__file__))
 
 one_minute = 1000*10*60
-clock = Widget.Label(label="skibidi")
+clock = Widget.Label(label="Clock")
 def update_clock():
     time = datetime.datetime.now().strftime("%H:%M")
     clock.set_label(time)
     
-Utils.Poll(timeout=one_minute,callback=lambda x:update_clock())
-
 bt_menu = BluetoothMenu()
 
 main_connection_menu = Widget.Box(
@@ -62,8 +60,11 @@ bar = Widget.CenterBox(
                 ]
             )
         )
-bar_main = Widget.Box(
+bar_main = Widget.EventBox(
+        on_click = lambda x: toggle_connection_menu(),
         vertical = True,
+        vexpand = True,
+        valign = 'end',
         child = [
             main_connection_menu,
             Widget.EventBox(
@@ -98,10 +99,10 @@ startup_locked = True
 def show_workspace():
     global timeout_workspace
     global startup_locked
-    print()
     if startup_locked:
         startup_locked = False
         return
+    update_clock()
     bar_main.child[1].child[0].set_reveal_child(True)
     if timeout_workspace != None:
         timeout_workspace.cancel()

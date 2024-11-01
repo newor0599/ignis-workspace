@@ -2,6 +2,7 @@ import sys
 import os
 from ignis.app import IgnisApp
 from ignis.widgets import Widget
+import modules.bar.audio
 
 style_path = os.path.expanduser("~/.config/ignis/main.scss")
 
