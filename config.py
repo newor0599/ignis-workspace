@@ -1,8 +1,6 @@
 import sys
 import os
 from ignis.app import IgnisApp
-from ignis.widgets import Widget
-import modules.bar.audio
 
 style_path = os.path.expanduser("~/.config/ignis/main.scss")
 
@@ -12,4 +10,5 @@ script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'scripts')
 sys.path.append(script_path)
 import modules.bar.main # Quickbar
 import modules.emptyworkspace.main #Empty Workspace Widgets
+from popups import backlight
 # import modules.settings.main # Settings Window

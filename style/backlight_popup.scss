@@ -1,0 +1,26 @@
+.backlight.popup{
+  border-radius: $border-radius;
+  &.frame{
+    padding: 10px;
+    background: $background-dark;
+    margin-left: 10px;
+  }
+  &.scale{
+    background-color: $accent-dark;
+    min-height: 150px;
+  }
+  &.icon{
+    margin-top: 10px;
+    margin-left: -5px;
+  }
+}
+
+trough highlight{
+  background: $accent;
+  border:none;
+  box-shadow: none;
+  padding: 5px;
+  margin: 5px;
+  border-radius: $border-radius;
+  min-width: 10px;
+}

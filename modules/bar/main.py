@@ -33,6 +33,11 @@ def toggle_connection_menu():
     if main_connection_menu.child[0].reveal_child:
         bt_menu._scan()
 
+# current_workspace_number = Widget.Box(
+#         child = [Widget.Label(label=hypr.bind(""))]
+#         )
+
+
 bar = Widget.CenterBox(
         css_classes=['bar','main'],
         hexpand = True,
