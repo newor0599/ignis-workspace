@@ -3,7 +3,7 @@ from ignis.widgets import Widget
 from ignis.utils import Utils
 
 class Popup():
-    def __init__(self,name:str,icon:str,value:int, on_change:Callable, min_:int=0, max_:int=100,step_:int=10,vertical:bool = True):
+    def __init__(self,name:str,icon:str,value:int, on_change:Callable, min_:int=0, max_:int=100,step_:int=10,vertical:bool = True,transition_type = "slide_right"):
         self.startup_locked = -2
         self.popup_timeout = None
         self.value = value
@@ -13,12 +13,13 @@ class Popup():
         self.min = min_
         self.max = max_
         self.name = name
+        self.transition_type = transition_type
         bar_width = 150
         bar_height = 10
         if self.vertical:
             bar_height,bar_width = bar_width,bar_height
         self.bar_style = f"min-width:{bar_width}px;min-height:{bar_height}px;"
-        self.reveal = Widget.Revealer(child = self.content(),css_classes = [self.name,'popup','reveal'],transition_type = 'slide_right',transition_duration = 300)
+        self.reveal = Widget.Revealer(child = self.content(),css_classes = [self.name,'popup','reveal'],transition_type = self.transition_type,transition_duration = 300)
 
     def content(self) -> Widget.EventBox:
         icon = Widget.Label(label = self.icon,css_classes = ['popup',self.name,'icon'])

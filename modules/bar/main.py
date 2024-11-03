@@ -101,12 +101,15 @@ Widget.Window(
 
 timeout_workspace = None
 startup_locked = True
+old_workspace = 0
 def show_workspace():
-    global timeout_workspace
-    global startup_locked
+    global timeout_workspace,old_workspace,startup_locked
     if startup_locked:
         startup_locked = False
         return
+    if old_workspace == hypr.active_workspace['id']: #type: ignore
+        return
+    old_workspace = hypr.active_workspace['id'] #type: ignore
     update_clock()
     bar_main.child[1].child[0].set_reveal_child(True)
     if timeout_workspace != None:
