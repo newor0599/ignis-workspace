@@ -11,4 +11,5 @@ sys.path.append(script_path)
 import modules.bar.main # Quickbar
 import modules.emptyworkspace.main #Empty Workspace Widgets
 from popups import backlight
+from popups import volume
 # import modules.settings.main # Settings Window
