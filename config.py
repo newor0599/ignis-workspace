@@ -9,5 +9,6 @@ IgnisApp.get_default().apply_css(style_path)
 script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'scripts'))
 sys.path.append(script_path)
 from modules.bar import main 
+from modules.emptyworkspace import main
 from popups import backlight
 from popups import volume
