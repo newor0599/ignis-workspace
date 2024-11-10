@@ -3,7 +3,17 @@ from ignis.widgets import Widget
 from ignis.utils import Utils
 
 class Popup():
-    def __init__(self,name:str,icon:str,value:int, on_change:Callable, min_:int=0, max_:int=100,step_:int=10,vertical:bool = True,transition_type = "slide_right"):
+    def __init__(self,
+                 name:str,
+                 icon:str,
+                 value:int,
+                 on_change:Callable, 
+                 min_:int=0,
+                 max_:int=100,
+                 step_:int=10,
+                 vertical:bool = True,
+                 transition_type = "slide_right"
+                 ):
         self.startup_locked = -2
         self.popup_timeout = None
         self.value = value
@@ -14,6 +24,7 @@ class Popup():
         self.max = max_
         self.name = name
         self.transition_type = transition_type
+        self.step = step_
         bar_width = 150
         bar_height = 10
         if self.vertical:
@@ -26,18 +37,23 @@ class Popup():
         bar = Widget.Scale(
                 min = self.min,
                 max = self.max,
-                step = 100,
-                on_change = lambda x:self.callable(bar.value),
+                step = self.step,
+                on_change = lambda x:self.bar_value_change(x),
                 css_classes = ['popup',self.name,'scale'],
                 value = self.value,
                 vertical = self.vertical,
-                style = self.bar_style
+                style = self.bar_style,
+                inverted = True,
                 )
         return Widget.Box(
                     child = [bar,icon] if self.vertical else [icon,bar],
                     css_classes = [self.name,'popup','frame'],
                     vertical = self.vertical,
                 )
+
+    def bar_value_change(self,value):
+        self.show_popup()
+        self.callable(int(value.value))
 
     def show_popup(self):
         if self.startup_locked < 0:

@@ -1,8 +1,6 @@
 from ignis.widgets import Widget
 from bluetooth import BluetoothService
-
-
-
+from ignis.utils import Utils
 
 class BluetoothMenu(Widget.Box):
     def __init__(self):
@@ -15,6 +13,7 @@ class BluetoothMenu(Widget.Box):
         self.bluetooth_menu = Widget.Box(
                 vertical = True
                 )
+        self.hide_nameless_device = True
         self.bt = BluetoothService()
         self.bt.connect("notify::devices",lambda x,y: self.update_menu())
         self.bluetooth_scroll = Widget.Scroll(
@@ -40,6 +39,7 @@ class BluetoothMenu(Widget.Box):
         if device['name'] == b'<unknown>':
             name = device['mac_address'].decode('utf-8')
 
+        @Utils.run_in_thread
         def button_on_click(device):
             if not device['connected']:
                 self.bt.connect_device(device)
@@ -48,7 +48,7 @@ class BluetoothMenu(Widget.Box):
 
 
         box = Widget.EventBox(
-                on_click = lambda x,y=device: button_on_click(y),
+            on_click = lambda x,y=device: button_on_click(y),
             on_hover = lambda x: box.add_css_class("hover"),
             on_hover_lost = lambda x:box.remove_css_class('hover'),
             css_classes = ['bt','device','connected' if device['connected'] else 'disconnected', 'paired' if device['paired'] else 'unpaired'],
@@ -70,6 +70,7 @@ class BluetoothMenu(Widget.Box):
     def update_menu(self):
         device_selections = []
         for device in self.bt.devices:
-            device_selections.append(self.device_box(device))
+            if not self.hide_nameless_device or device['name'].decode("utf-8") != '<unknown>':
+                    device_selections.append(self.device_box(device))
 
         self.bluetooth_menu.set_child(device_selections)

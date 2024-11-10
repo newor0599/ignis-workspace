@@ -1,0 +1,43 @@
+.audio{
+  font-family: 'Storopia';
+}
+.audio.window{
+  padding: 5px;
+  margin: 10px;
+  border-radius: $border-radius+5;
+  background: $background;
+  min-width: 300px;
+  min-height: 200px;
+}
+
+.audio.control.box{
+  padding: 10px;
+  margin: 10px;
+  border-radius: $border-radius;
+  background: $background-light;
+}
+
+.audio.button{
+  margin: 10px;
+  background: #ff3501;
+  padding:10px;
+}
+
+.audio.scale{
+  background: $accent-dark;
+  border-radius: 999px;
+  padding-right: 5px;
+}
+
+.audio.scale trough highlight{
+  background: $accent-light;
+  min-height: 20px;
+  min-width: 20px;
+  margin: 5px;
+  border-radius: 999px;
+}
+
+.audio.name{
+  margin:5px;
+  padding: 0;
+}

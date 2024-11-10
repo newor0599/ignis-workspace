@@ -3,6 +3,7 @@ from ignis.utils import Utils
 from workspace import workspace_indicator
 from ignis.services.hyprland import HyprlandService
 from .bluetooth_menu import BluetoothMenu
+from .audio_menu import AudioMenu
 import os
 import datetime
 
@@ -17,26 +18,31 @@ def update_clock():
     clock.set_label(time)
     
 bt_menu = BluetoothMenu()
+audios_menu = AudioMenu()
 
 main_connection_menu = Widget.Box(
     halign = 'end',
     child = [
         Widget.Revealer(
-            child = bt_menu,
             transition_type = 'slide_up'
         ),
     ]
 )
 
-def toggle_connection_menu():
-    main_connection_menu.child[0].set_reveal_child(not main_connection_menu.child[0].reveal_child)
+
+def connection_menu_on(menu):
+    if type(menu) == BluetoothMenu:
+        menu._scan()
+    if type(menu) == AudioMenu: #type: ignore
+        menu.update_menu()
+
+def toggle_connection_menu(menu):
+    old_child = main_connection_menu.child[0].child
+    main_connection_menu.child[0].set_child(menu)
+    if old_child == menu:
+        main_connection_menu.child[0].set_reveal_child(not main_connection_menu.child[0].reveal_child)
     if main_connection_menu.child[0].reveal_child:
-        bt_menu._scan()
-
-# current_workspace_number = Widget.Box(
-#         child = [Widget.Label(label=hypr.bind(""))]
-#         )
-
+        connection_menu_on(menu)
 
 bar = Widget.CenterBox(
         css_classes=['bar','main'],
@@ -60,13 +66,32 @@ bar = Widget.CenterBox(
                 Widget.Button(
                     css_classes = ['bar','bt','trigger'],
                     child = Widget.Label(label = "󰂯"),
-                    on_click = lambda x: toggle_connection_menu()
+                    on_click = lambda x: toggle_connection_menu(bt_menu)
+                    ),
+                Widget.Button(
+                    css_classes = ['bar','bt','trigger'],
+                    child = Widget.Label(label = " "),
+                    on_click = lambda x: toggle_connection_menu(audios_menu)
                     )
                 ]
             )
         )
+
+timeout_bar = None
+def hide_bar(reveal):
+    global timeout_bar
+    if timeout_bar != None:
+        timeout_bar.cancel()
+    timeout_bar = Utils.Timeout(200,lambda: reveal(False))
+
+def show_bar(reveal):
+    global timeout_bar
+    if timeout_bar != None:
+        timeout_bar.cancel()
+    reveal(True)
+
 bar_main = Widget.EventBox(
-        on_click = lambda x: toggle_connection_menu(),
+        # on_click = lambda x: toggle_connection_menu(),
         vertical = True,
         vexpand = True,
         valign = 'end',
@@ -75,8 +100,8 @@ bar_main = Widget.EventBox(
             Widget.EventBox(
                 vertical = True,
                 css_classes = ["bar","trigger"],
-                on_hover = lambda x: x.child[0].set_reveal_child(True),
-                on_hover_lost = lambda x: x.child[0].set_reveal_child(False),
+                on_hover = lambda x: show_bar(x.child[0].set_reveal_child),
+                on_hover_lost = lambda x: hide_bar(x.child[0].set_reveal_child),
                 child = [
                         Widget.Revealer(
                             hexpand = True,
@@ -93,9 +118,9 @@ bar_main = Widget.EventBox(
 
 Widget.Window(
     namespace="Taskbar",
+    monitor = 0,
     layer = 'top',
     anchor = ['bottom','left','right'],
-    css_classes = ["bar","window"],
     child = bar_main,
 )
 

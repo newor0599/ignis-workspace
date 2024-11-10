@@ -8,6 +8,16 @@
   &.scale{
     background-color: $accent-dark;
     min-height: 150px;
+    trough highlight{
+      background: $accent-light;
+      border:none;
+      box-shadow: none;
+      padding: 5px;
+      margin: 5px;
+      border-radius: $border-radius;
+      min-width: 10px;
+      min-height: 10px;
+  }
   }
   &.icon{
     margin-top: 10px;
@@ -15,13 +25,3 @@
   }
 }
 
-.popup.scale trough highlight{
-  background: $accent-light;
-  border:none;
-  box-shadow: none;
-  padding: 5px;
-  margin: 5px;
-  border-radius: $border-radius;
-  min-width: 10px;
-  min-height: 10px;
-}
