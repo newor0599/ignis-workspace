@@ -1,4 +1,3 @@
-from os import setegid
 from ignis.widgets import Widget
 from ignis.services.audio import AudioService
 from ignis.services.audio import Stream
@@ -24,13 +23,17 @@ class AudioMenu(Widget.Box):
 
     def shorten_sentence(self,sentence:str,max_char:int=18):
         list_sentence = sentence.strip().split(" ")
-        for i in list_sentence.copy()[1:-2]:
-            if (max_char - len(list_sentence[0])) > len(i):
-                list_sentence[0] = list_sentence[0]+ " " + i
-        return list_sentence[0],list_sentence[-1]
+        new_sentence = ''
+        run_loop = True
+        for i in list_sentence.copy()[:-2]:
+            if (max_char - len(new_sentence)) > len(i) and run_loop:
+                new_sentence += " " + i
+            else:
+                run_loop = False
+        return new_sentence,list_sentence[-1]
 
     def app_control(self,app:Stream) -> Widget.Box:
-        desc_max_char = 18
+        desc_max_char = 30
         app_desc = re.sub("^\\([0-9]+\\)","",app.description)
         app_desc = self.shorten_sentence(app_desc,desc_max_char)
         app_desc = f"{app_desc[0]}{' \"' + app_desc[-1] + '\"' if app_desc[0] != app_desc[1] else ''}"

@@ -37,10 +37,8 @@ def connection_menu_on(menu):
         menu.update_menu()
 
 def toggle_connection_menu(menu):
-    old_child = main_connection_menu.child[0].child
     main_connection_menu.child[0].set_child(menu)
-    if old_child == menu:
-        main_connection_menu.child[0].set_reveal_child(not main_connection_menu.child[0].reveal_child)
+    main_connection_menu.child[0].set_reveal_child(not main_connection_menu.child[0].reveal_child)
     if main_connection_menu.child[0].reveal_child:
         connection_menu_on(menu)
 
@@ -91,7 +89,7 @@ def show_bar(reveal):
     reveal(True)
 
 bar_main = Widget.EventBox(
-        # on_click = lambda x: toggle_connection_menu(),
+        # on_click = lambda x: toggle_connection_menu(None),
         vertical = True,
         vexpand = True,
         valign = 'end',
