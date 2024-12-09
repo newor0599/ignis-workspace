@@ -1,0 +1,28 @@
+*{
+  all:unset;
+}
+
+.bar-main{
+  background: $background;
+  border-top-left-radius: $border-radius+10px;
+  border-bottom-left-radius: $border-radius+10px;
+  border-radius: $border-radius+10px;
+}
+
+.bar-widget{
+  &.frame{
+    background: $accent;
+    min-width: 40px;
+    margin: 10px 10px 0px 10px;
+    padding: 20px 0px;
+    border-radius: $border-radius;
+  }
+  &.value{
+    font-family: 'Ndot';
+    font-size: 25px;
+    color: $text;
+  }
+  &.icon{
+    font-size: 20px;
+  }
+}
