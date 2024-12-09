@@ -34,5 +34,5 @@ Widget.Window(
             child = [
                 clock,
                 ],
-            )
+            ),
         )

@@ -6,7 +6,6 @@ from workspace import workspace_indicator
 from ignis.services.hyprland import HyprlandService
 from .bluetooth_menu import BluetoothMenu
 from .audio_menu import AudioMenu
-
 import os
 import datetime
 
