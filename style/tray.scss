@@ -1,0 +1,81 @@
+@use "colors" as c;
+@use "settings" as s;
+*{
+  all:unset;
+}
+
+.tray-main{
+  background: c.$ui-main;
+  box-shadow: 0 0 8px 3px c.$ui-shadow;
+  border-top-left-radius: 100px;
+  border-bottom-left-radius: 10px;
+  border-radius: 30px;
+  margin: 20px;
+  padding: 10px;
+}
+
+.tray.chip{
+  &.frame{
+    background: c.$ui-white;
+    min-width: s.$tray-item-size;
+    margin-bottom: s.$tray-item-distance;
+    padding: 15px 0px;
+    border-radius: 100px;
+    box-shadow: 0 0 5px 5px c.$ui-shadow;
+  }
+  &.value{
+    font-size: 20px;
+    color: c.$ui-main;
+    line-height: 0.85;
+    font-family: "Space Mono";
+  }
+  &.icon{
+    font-size: 20px;
+    color: c.$ui-main;
+  }
+}
+
+.tray-revealer{
+  background: #00000001;
+}
+
+.tray.button{
+  min-width: s.$tray-item-size;
+  min-height: s.$tray-item-size;
+  background: c.$ui-white;
+  border-radius: 100px;
+  margin-bottom: s.$tray-item-distance;
+  color: c.$ui-main;
+  font-size: calc(s.$tray-item-size*0.6);
+  transition: .3s ease;
+  box-shadow: 0 0 5px 3px c.$ui-shadow;
+}
+.tray.button:checked{
+  background: c.$ui-second;
+}
+
+.tray.chip-button{
+  min-width: s.$tray-item-size;
+  min-height: s.$tray-item-size;
+  background: c.$ui-white;
+  border-radius: 100px;
+  margin-bottom: s.$tray-item-distance;
+  color: c.$ui-main;
+  font-size: calc(s.$tray-item-size*0.6);
+  transition: .3s ease;
+  padding: 10px 0px 10px 0px;
+}
+.tray.chip-button:checked{
+  background: c.$ui-second;
+}
+.tray.menu-item{
+  margin-right: s.$tray-item-distance;
+  min-width: 300px;
+  min-height: 900px;
+}
+
+.tray.main-menu.title{
+  font-size:24px;
+  font-weight: 700;
+  margin-bottom:10px;
+}

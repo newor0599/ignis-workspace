@@ -1,8 +1,39 @@
-@import "style/colors.scss";
-@import "style/bar.scss";
-@import "style/empty_workspace.scss";
-@import "style/workspace_indicator.scss";
-@import "style/bluetooth-menu.scss";
-@import "style/popup.scss";
-@import "style/audio_control.scss";
-@import "style/notification.scss";
+@use "style/home_screen.scss";
+@use "style/popup.scss";
+@use "style/notification.scss";
+@use "style/tray.scss";
+@use "style/audio_control.scss";
+@use "style/bluetooth-menu.scss";
+@use "style/colors.scss";
+@use "style/settings.scss" as s;
+
+
+revealer,window{
+  background: #00000001;
+}
+
+*{
+  min-width: 0px;
+  min-height: 0px;
+}
+
+/* Scale Default Style */
+
+scale{
+  slider{
+    opacity: 0;
+  }
+  trough{
+    background:colors.$ui-second;
+    border:none;
+    border-radius: 100px;
+    box-shadow: 0 0 10px 2px colors.$ui-shadow;
+    highlight{
+      background: colors.$ui-white;
+      border:none;
+      border-radius:100px;
+      min-height: s.$popup-size;
+      min-width: 0px;
+    }
+  }
+}

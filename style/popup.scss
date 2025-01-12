@@ -1,31 +1,50 @@
+@use 'colors';
+@use 'settings' as s;
 .popup{
-  border:none;
-  box-shadow:none;
-  border-radius: $border-radius+10;
-  padding: 5px;
   &.frame{
-    padding: 10px;
     border:none;
-    background: $background-dark;
+    background: colors.$ui-main;
+    border-radius: 200px;
+    margin: 20px;
+    padding: calc(s.$popup-size*0.4);
+    box-shadow: 0 0 10px 2px colors.$ui-shadow;
   }
+
   &.scale{
-    background-color: $accent-dark;
-    min-height: 150px;
-    border:none;
-    trough highlight{
-      background: $accent-light;
+    all:unset;
+    min-width: 150px;
+    min-height: 1px;
+    border-radius: 100px;
+    *{
+      all:unset;
+    }
+    slider{
+      opacity: 0;
+    }
+    trough{
+      background:colors.$ui-second;
       border:none;
-      box-shadow: none;
-      padding: 5px;
-      margin: 5px;
-      border-radius: $border-radius;
-      min-width: 10px;
-      min-height: 10px;
+      border-radius: 100px;
+      box-shadow: 0 0 10px 2px colors.$ui-shadow;
+      highlight{
+        background: colors.$ui-white;
+        border:none;
+        border-radius:100px;
+        min-height: s.$popup-size;
+        min-width: 0px;
+      }
     }
   }
   &.icon{
-    margin-top: 10px;
-    margin-left: -5px;
-    border:none;
+    box-shadow: 0 0 10px 5px colors.$ui-shadow;
+    background: colors.$ui-white;
+    padding: 0px;
+    border-radius: 100px;
+    color: colors.$ui-main;
+    font-size: calc(s.$popup-size*0.7);
+    min-height: s.$popup-size;
+    min-width: s.$popup-size;
+    margin-right: 15px;
   }
 }
+

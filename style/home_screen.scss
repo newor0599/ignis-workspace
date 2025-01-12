@@ -1,0 +1,12 @@
+@use 'colors';
+.homescreen.clock{
+  line-height: 0.7;
+  border-radius: 100px;
+  color: colors.$wp-white;
+  background:none;
+  border:none;
+  font-size: 150px;
+  font-weight: 100;
+  font-family: "Storopia";
+  margin: 0 0 700px 800px;
+}

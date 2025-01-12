@@ -1,50 +1,33 @@
+@use "colors" as c;
+@use "settings" as s;
+
 *{
   all:unset;
 }
 
-.bt.window{
-  background-color: $background-light;
-  padding: 10px;
-  margin: 10px;
-  border-radius: $border-radius;
-}
-
-
-.bt.main{
-  background: $background;
-  padding: 10px;
-  min-height: 200px;
-  border-radius: 10px;
-  min-width: 220px;
-}
-
 .bt.device{
-  background: $accent;
+  background: c.$ui-white;
   padding: 10px;
   margin: 10px 0px;
-  color: #fff;
+  color: c.$ui-main;
   font-family: 'Storopia';
   transition: .3s ease;
-  /* font-size: 20px; */
-  border-radius: $border-radius;
-  &.connected.paired{
-    background: $accent-dark;
-  }
-  &.paired{
-    background: $accent-light;
-  }
+  font-size: 17px;
+  box-shadow: 0 0 5px 3px c.$ui-shadow;
+  border-radius: 100px;
   &.hover{
-    opacity: .8;
+    background: c.$ui-second;
   }
 }
 
 .bt.scan-button{
   padding:10px;
   font-size: 40px;
-  background: $accent;
+  background: c.$ui-white;
   margin-top: 10px;
-  border-radius: $border-radius;
-  font-family: 'Ndot';
+  border-radius: 100px;
+  font-family: 'Storopia';
+  color: c.$ui-main;
 }
 
 .bt.scanning-indicator{
