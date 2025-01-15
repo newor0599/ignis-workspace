@@ -6,11 +6,10 @@ from ignis.services.wallpaper import WallpaperService
 from ignis.options import options
 
 # Widgets
-from modules.home_screen import home_screen
-from modules.popup import audio_popup
-from modules.popup import backlight_popup
-from modules.notification import desktop_notification
-from modules.tray.main import tray
+import modules.home_screen as home_screen_mod
+import modules.popup as popup_mod
+import modules.notification as notif_mod
+import modules.tray.main as tray_mod
 
 style_path = os.path.expanduser("~/.config/ignis/main.scss")
 IgnisApp.get_default().apply_css(style_path)
@@ -25,17 +24,17 @@ wallpaper_path = os.path.expanduser(wallpaper_path)
 wallpaper = WallpaperService.get_default()
 options.wallpaper.set_wallpaper_path(wallpaper_path)
 
-desktop_notification()
-home_screen(0)
-tray()
+notif_mod.desktop_notification()
+home_screen_mod.home_screen(0)
+tray = tray_mod.Tray()
 
 Widget.Window(
     namespace="Audio popups IGNIS",
     anchor=["bottom"],
-    child=audio_popup(),
+    child=popup_mod.audio_popup(),
 )
 Widget.Window(
     namespace="Backlight popups IGNIS",
     anchor=["bottom"],
-    child=backlight_popup(),
+    child=popup_mod.backlight_popup(),
 )

@@ -4,13 +4,19 @@
   font-family: 'Storopia';
 }
 .audio.window{
-  background: None;
+  padding-top: 5px;
+  background: c.$ui-white;
+  border-radius: 20px;
+  margin-bottom: s.$tray-item-distance;
+}
+
+.audio.scroll{
+  min-height: 300px;
 }
 
 .audio.control.box{
   padding: 10px;
   border-radius: 18px;
-  background: c.$ui-white;
   margin-bottom: s.$tray-item-distance;
 }
 
@@ -29,9 +35,19 @@
 .audio.desc{
   /* font-weight: 600; */
   font-size: 17px;
-  color: c.$ui-main;
+  color: c.$ui-white;
+  background: c.$ui-main;
+  padding: 5px 10px 5px 10px;
+  margin-right: 5px;
+  border-radius: 100px;
+  box-shadow: 0 0 5px 1px c.$ui-shadow;
 }
 
 .audio.scale{
   color: c.$ui-main;
+  trough highlight{
+    background: c.$ui-main;
+  }
+  margin: 10px;
+  margin-top: 5px;
 }

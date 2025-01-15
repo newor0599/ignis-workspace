@@ -7,60 +7,11 @@ from os import system as cmd
 
 from .bluetooth_menu import BluetoothMenu
 from .audio_menu import AudioMenu
-import os
 import datetime
 
 hypr = HyprlandService.get_default()
 upw = UPowerService.get_default()
 audio = AudioService.get_default()
-
-one_minute = 1000 * 60
-clock = Widget.Label(label="Clock")
-
-
-class Tray(Widget.Box):
-    def __init__(self):
-        pass
-
-
-def get_time():
-    hour = datetime.datetime.now().strftime("%H")
-    minute = datetime.datetime.now().strftime("%M")
-    return hour, minute
-
-
-battery_device = upw.display_device
-
-
-time_poll = Utils.Poll(timeout=one_minute, callback=lambda x: get_time())
-
-
-class chip_widget(Widget.EventBox):
-    def __init__(self, value, icon=""):
-        value_label = Widget.Label(
-            label=value,
-            css_classes=["tray", "chip", "value"],
-        )
-        icon_label = Widget.Label(
-            label=icon,
-            css_classes=["tray", "chip", "icon"],
-            halign="center",
-            justify="fill",
-        )
-        super().__init__(
-            vertical=True,
-            css_classes=["tray", "chip", "frame"],
-            valign="start",
-            child=[value_label, icon_label if icon != "" else None],
-        )
-
-
-clock_widget = chip_widget(
-    value=time_poll.bind("output", lambda x: f"{x[0]}\n{x[1]}"),
-)
-
-
-notified_battery = False
 
 
 @Utils.run_in_thread
@@ -84,109 +35,196 @@ def low_batt_warning(value, warning_thres: int = 15, critical_thres: int = 5):
     notified_battery = True
 
 
-battery_widget = chip_widget(
-    value=battery_device.bind("percent", lambda value: f"{int(value)}"),
-    icon=battery_device.bind("charging", lambda value: "󰂄" if value else "󰁹"),
-)
-battery_device.connect("notify::percent", lambda x, y: low_batt_warning(x.percent))
-
-
-def get_audio_icon(volume_level: int) -> str:
-    if volume_level is None:
-        return ""
-    if volume_level <= 0:
-        return " "
-    if volume_level <= 50:
-        return " "
-    if volume_level <= 100:
-        return " "
-    if volume_level > 100:
-        return "󱄡 "
-
-
-bt_menu = BluetoothMenu()
-audios_menu = AudioMenu()
-main_menu = Widget.Revealer(
-    transition_type="slide_left",
-    css_classes=["tray", "main-menu"],
-    child=Widget.Box(
-        vertical=True,
-        css_classes=["tray", "menu-item"],
-    ),
-)
-
-
-def toggle_menu(menu_name, set_child, show_child):
-    global main_menu
-    main_menu.child.set_child(
-        [Widget.Label(label=menu_name, css_classes=["tray", "main-menu", "title"])]
-    )
-    main_menu.child.append(set_child)
-    main_menu.set_reveal_child(show_child)
-
-
-audio_widget = Widget.ToggleButton(
-    hexpand=False,
-    halign="center",
-    child=Widget.Label(label=" "),
-    css_classes=["tray", "button"],
-    on_toggled=lambda x, active: toggle_menu("Apps Audio", audios_menu, active),
-)
-
-## BLUETOOTH ##
-bluetooth_toggle = Widget.ToggleButton(
-    hexpand=False,
-    halign="center",
-    child=Widget.Label(
-        label="󰂯",
-        hexpand=False,
-        vexpand=False,
-        halign="center",
-        valign="center",
-    ),
-    css_classes=["tray", "button"],
-    on_toggled=lambda x, active: toggle_menu("Bluetooth", bt_menu, active),
-)
-
-tray_main = Widget.Box(
-    css_classes=["tray-main"],
-    child=[
-        main_menu,
-        Widget.Box(
+class chip_widget(Widget.EventBox):
+    def __init__(self, value, icon=""):
+        value_label = Widget.Label(
+            label=value,
+            css_classes=["tray", "chip", "value"],
+        )
+        icon_label = Widget.Label(
+            label=icon,
+            css_classes=["tray", "chip", "icon"],
+            halign="center",
+            justify="fill",
+        )
+        super().__init__(
             vertical=True,
-            child=[
-                clock_widget,
-                battery_widget,
-                audio_widget,
-                bluetooth_toggle,
-            ],
-        ),
-    ],
-)
-
-tray_revealer = Widget.Revealer(
-    child=tray_main,
-    transition_type="slide_left",
-    reveal_child=False,
-    css_classes=["tray-revealer"],
-)
-
-audio.connect("notify::apps", lambda x, y: audios_menu.update_menu())
+            css_classes=["tray", "chip", "frame"],
+            valign="start",
+            child=[value_label, icon_label if icon != "" else None],
+        )
 
 
-def tray():
-    revealer = Widget.RevealerWindow(
-        namespace="tasktray IGNIS",
-        css_classes=["tray-window"],
-        anchor=["top", "right", "bottom"],
-        child=Widget.EventBox(
-            child=[tray_revealer],
-            on_hover=lambda x: tray_revealer.set_reveal_child(True),
-            on_hover_lost=lambda x: tray_revealer.set_reveal_child(
-                main_menu.reveal_child
+class Tray(Widget.RevealerWindow):
+    def __init__(self):
+        ## Elements Variables
+        self.notified_battery = False
+        self.clock_update = 1000 * 60
+
+        ## Element Services
+        self.battery_device = upw.display_device
+
+        ## Tray elements
+        self.bluetooth_toggle = self.BluetoothMenuToggle()
+        self.app_audio_mixer_toggle = self.AppAudioMixerToggle()
+        self.bluetooth_menu = self.BluetoothRevealer()
+        self.app_audio_mixer_menu = self.AppAudioMixerRevealer()
+        self.menus = [self.bluetooth_menu, self.app_audio_mixer_menu]
+        self.clock_chip = self.ClockChip()
+        self.battery_chip = self.BatteryChip()
+        self.main_menu = self.MainMenu()
+        self.main_tray = self.MainTray()
+        self.tray_revealer = self.TrayRevealer()
+
+        ## Element Update Triggers
+        audio.connect(
+            "notify::apps",
+            lambda x, y: self.app_audio_mixer_menu.child.update_menu(),
+        )
+
+        super().__init__(
+            namespace="tasktray IGNIS",
+            css_classes=["tray-window"],
+            anchor=["top", "right", "bottom"],
+            child=Widget.EventBox(
+                child=[self.tray_revealer],
+                on_hover=lambda x: self.tray_revealer.set_reveal_child(True),
+                on_hover_lost=lambda x: self.tray_revealer.set_reveal_child(
+                    self.main_menu.reveal_child
+                ),
             ),
-        ),
-        revealer=tray_revealer,
-    )
-    revealer.revealer.set_reveal_child(False)
-    return revealer
+            revealer=self.tray_revealer,
+        )
+
+    def MainTray(self) -> Widget.Box:
+        tray_main = Widget.Box(
+            css_classes=["tray-main"],
+            child=[
+                self.main_menu,
+                Widget.Box(
+                    vertical=True,
+                    child=[
+                        self.clock_chip,
+                        self.battery_chip,
+                        self.app_audio_mixer_toggle,
+                        self.bluetooth_toggle,
+                    ],
+                ),
+            ],
+        )
+        return tray_main
+
+    def TrayRevealer(self):
+        return Widget.Revealer(
+            child=self.main_tray,
+            transition_type="slide_left",
+            reveal_child=False,
+            css_classes=["tray-revealer"],
+        )
+
+    def ClockChip(self):
+        def get_time():
+            hour = datetime.datetime.now().strftime("%H")
+            minute = datetime.datetime.now().strftime("%M")
+            return hour, minute
+
+        time_poll = Utils.Poll(timeout=self.clock_update, callback=lambda x: get_time())
+        clock_widget = chip_widget(
+            value=time_poll.bind("output", lambda x: f"{x[0]}\n{x[1]}"),
+        )
+        return clock_widget
+
+    def BatteryChip(self):
+        battery_widget = chip_widget(
+            value=self.battery_device.bind("percent", lambda value: f"{int(value)}"),
+            icon=self.battery_device.bind(
+                "charging", lambda value: "󰂄" if value else "󰁹"
+            ),
+        )
+        self.battery_device.connect(
+            "notify::percent", lambda x, y: low_batt_warning(x.percent)
+        )
+        return battery_widget
+
+    def AppAudioMixerToggle(self):
+        def get_audio_icon(volume_level: int) -> str:
+            if volume_level is None:
+                return ""
+            if volume_level <= 0:
+                return " "
+            if volume_level <= 50:
+                return " "
+            if volume_level <= 100:
+                return " "
+            if volume_level > 100:
+                return "󱄡 "
+
+        def toggle(active):
+            self.app_audio_mixer_menu.set_reveal_child(active)
+            self.app_audio_mixer_menu.child.update_menu()
+            self.main_menu.reveal(active)
+
+        audio_widget = Widget.ToggleButton(
+            hexpand=False,
+            halign="center",
+            child=Widget.Label(label=" "),
+            css_classes=["tray", "button"],
+            on_toggled=lambda x, active: toggle(active),
+        )
+        return audio_widget
+
+    def AppAudioMixerRevealer(self):
+        return Widget.Revealer(
+            child=AudioMenu(),
+            css_classes=["aam", "menu", "revealer", "tray"],
+        )
+
+    def BluetoothMenuToggle(self):
+        def toggle_menu(active):
+            self.bluetooth_menu.set_reveal_child(active)
+            self.main_menu.reveal(active)
+
+        bluetooth_toggle = Widget.ToggleButton(
+            hexpand=False,
+            halign="center",
+            child=Widget.Label(
+                label="󰂯",
+                hexpand=False,
+                vexpand=False,
+                halign="center",
+                valign="center",
+            ),
+            css_classes=["tray", "button"],
+            on_toggled=lambda x, active: toggle_menu(active),
+        )
+        return bluetooth_toggle
+
+    def BluetoothRevealer(self):
+        return Widget.Revealer(
+            child=BluetoothMenu(),
+            css_classes=["tray", "bt", "menu", "revealer"],
+        )
+
+    def MainMenu(self):
+        main_menu = Widget.Revealer(
+            transition_type="slide_left",
+            css_classes=["tray", "main-menu"],
+            child=Widget.Box(
+                vertical=True,
+                child=self.menus,
+                css_classes=["tray", "menu-item"],
+            ),
+        )
+
+        def reveal(value: bool):
+            if value:
+                main_menu.set_reveal_child(True)
+                return
+            for menu in self.menus:
+                if menu.reveal_child:
+                    return
+            main_menu.set_reveal_child(False)
+
+        main_menu.reveal = reveal
+
+        return main_menu

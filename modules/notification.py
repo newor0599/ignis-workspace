@@ -139,6 +139,12 @@ def desktop_notification():
     )
 
 
+def send_notification(title, body, icon):
+    title = f'"{title}"'
+    body = f'"{body}"'
+    os.system(f"notify-send {title} {body} -i {icon}")
+
+
 def pp_notif(notif: Notification):
     print("App name:", notif.app_name)
     print("Title:", notif.summary)

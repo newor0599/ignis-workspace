@@ -44,14 +44,14 @@ class AudioMenu(Widget.Box):
             halign="start",
         )
         app_desc = Widget.Label(
-            label=app_desc,
+            label=f"{app.name}-{app_desc}",
             css_classes=["audio", "control", "desc"],
             halign="start",
             style="margin: 0 0 10px 10px; font-size: 17px;",
             ellipsize="middle",
         )
         main = Widget.Box(
-            child=[app_name, app_desc, volume],
+            child=[app_desc, volume],
             css_classes=["audio", "control", "box"],
             vertical=True,
             hexpand=True,
@@ -60,7 +60,10 @@ class AudioMenu(Widget.Box):
 
     def update_menu(self):
         self.apps = self.audio.apps
+        empty = Widget.Label(label="No app using audio")
         apps_control = []
         for app in self.apps:  # type: ignore
             apps_control.append(self.app_control(app))
+        if len(apps_control) == 0:
+            apps_control.append(empty)
         self.apps_control.set_child(apps_control)

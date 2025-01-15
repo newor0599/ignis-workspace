@@ -43,7 +43,7 @@ class BluetoothMenu(Widget.Box):
         if device.connected:
             return "  "
         if device.paired:
-            return "paired"
+            return "󰀚  "
         return "  "
 
     def device_box(self, device) -> Widget.EventBox:
@@ -82,6 +82,7 @@ class BluetoothMenu(Widget.Box):
     def _scan(self):
         self.bt.set_powered(True)
         self.bt.set_setup_mode(True)
+        Utils.Timeout(ms=10000, target=self.bt.set_setup_mode(False))
 
     def update_menu(self):
         device_selections = []
