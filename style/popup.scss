@@ -15,30 +15,11 @@
     min-width: 150px;
     min-height: 1px;
     border-radius: 100px;
-    *{
-      all:unset;
-    }
-    slider{
-      opacity: 0;
-    }
-    trough{
-      background:colors.$ui-second;
-      border:none;
-      border-radius: 100px;
-      box-shadow: 0 0 10px 2px colors.$ui-shadow;
-      highlight{
-        background: colors.$ui-white;
-        border:none;
-        border-radius:100px;
-        min-height: s.$popup-size;
-        min-width: 0px;
-      }
-    }
   }
+
   &.icon{
-    box-shadow: 0 0 10px 5px colors.$ui-shadow;
+    box-shadow: 0 0 10px 2px colors.$ui-shadow;
     background: colors.$ui-white;
-    padding: 0px;
     border-radius: 100px;
     color: colors.$ui-main;
     font-size: calc(s.$popup-size*0.7);
