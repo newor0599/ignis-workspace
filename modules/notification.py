@@ -53,22 +53,32 @@ class NotificationBox(Widget.EventBox):
             ]
         )
 
-        actions = None
+        actions = Widget.Box()
         # Screenshot Layout
         if notif.app_name == "grimblast":
             icon.set_image(os.path.expanduser("~/.systemui/icons/system.png"))
             body.child[0].set_label("System")
             body.child[1].set_label(notif.summary)
-            actions = Widget.Picture(
-                image=notif.icon,
-                width=1920 // 7,
-                height=1080 // 7,
-                content_fit="cover",
-                css_classes=["notif", "image"],
+            actions.append(
+                Widget.Picture(
+                    image=notif.icon,
+                    width=1920 // 7,
+                    height=1080 // 7,
+                    content_fit="cover",
+                    css_classes=["notif", "image"],
+                )
             )
+            actions.vertical = True
 
         if len(notif.actions) > 0:
             actions = self.create_actions(notif)
+        dismiss_btn = Widget.Button(
+            child=Widget.Label(label="Dismiss", ellipsize="end"),
+            on_click=lambda x: self.destroy_box(),
+            css_classes=["notif", "action"],
+        )
+        actions.append(dismiss_btn)
+
         super().__init__(
             vertical=True,
             css_classes=["notif", "main"],
@@ -117,7 +127,6 @@ class Popup_notif(Widget.Revealer):
         )
 
     def hide_notif(self):
-        self.set_transition_type("slide_up")
         self.set_reveal_child(False)
         Utils.Timeout(ms=self.transition_duration, target=self.unparent)
 

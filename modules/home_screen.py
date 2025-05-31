@@ -2,7 +2,7 @@ from ignis.widgets import Widget
 from ignis.utils import Utils
 import datetime
 
-one_min = 1000 * 60
+clock_rate = 1000 * 20
 clock = Widget.Label(
     label="Hello!",
     valign="center",
@@ -16,12 +16,13 @@ def update_clock():
     clock.set_label(time)
 
 
-Utils.Poll(timeout=one_min, callback=lambda x: update_clock())
+Utils.Poll(timeout=clock_rate, callback=lambda x: update_clock())
 
 
 def home_screen(monitor: int = 0):
     return Widget.Window(
         monitor=monitor,
+        anchor=["bottom", "right"],
         namespace="Home Screen",
         exclusivity="normal",
         layer="bottom",

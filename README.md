@@ -7,12 +7,18 @@ Using screen 1920x1080
 
 ## Features
 <br>
-- Notification
+- [x] Notification
 <br>
-- Taskbar/Tray
+- [x] Taskbar/Tray
 <br>
-- Bluetooth UI
+- [x] Bluetooth UI
 <br>
-- Individual apps audio control
+- [x] Individual apps audio control
 <br>
-- Popup for audio and screen brightness
+- [x] Popup for audio and display brightness
+<br>
+- [ ] WiFi UI
+<br>
+- [ ] VPN UI
+<br>
+- [ ] Powermenu

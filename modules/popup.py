@@ -5,7 +5,7 @@ from ignis.services.audio import AudioService
 from ignis.services.backlight import BacklightService
 
 
-class Popup(Widget.Revealer):
+class ScalePopup(Widget.Revealer):
     def __init__(
         self,
         value,
@@ -86,8 +86,8 @@ def get_backlight_icon(backlight_level: int) -> str:
         return "󰃠 "
 
 
-def audio_popup() -> Popup:
-    popup = Popup(
+def audio_popup() -> ScalePopup:
+    popup = ScalePopup(
         value=speaker.bind("volume", lambda x: int(x) if x is not None else 0),
         icon=speaker.bind(
             "volume", lambda x: get_audio_icon(int(x) if x is not None else -1)
@@ -99,8 +99,8 @@ def audio_popup() -> Popup:
     return popup
 
 
-def backlight_popup() -> Popup:
-    popup = Popup(
+def backlight_popup() -> ScalePopup:
+    popup = ScalePopup(
         value=backlight.bind("brightness", lambda x: int(x)),
         icon=backlight.bind(
             "brightness",

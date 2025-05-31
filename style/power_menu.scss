@@ -1,0 +1,48 @@
+@use "colors" as c;
+@use "settings" as s;
+
+.powermenu {
+  &.shadow {
+    background: #00000001;
+    /*
+    padding-top:30rem;
+    padding-bottom:30rem;
+    padding-left:50rem;
+    padding-right:50rem;
+    */
+  }
+
+  &.window {
+    background: c.$ui-shadow;
+    margin-top: 30rem;
+    margin-bottom: 30rem;
+    margin-left: 50rem;
+    margin-right: 50rem;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 40rem 40rem c.$ui-shadow;
+  }
+
+  &.btn-rig {
+    margin: 10px;
+    min-width: 15rem;
+    min-height: 15rem;
+    background: c.$ui-con;
+    border-radius: calc(1rem - 5px);
+    transition: .2s ease;
+  }
+
+  &.btn-rig:hover {
+    background: c.$ui-shadow;
+  }
+
+  &.opt.desc {
+    color: c.$ui-con;
+    font-size: 1.2rem;
+    font-family: "Storopia";
+  }
+
+  &.opt.icon {
+    color: c.$ui-con;
+    font-size: 8rem;
+  }
+}

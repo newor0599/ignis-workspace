@@ -2,8 +2,6 @@ from ignis.widgets import Widget
 from ignis.services.bluetooth import BluetoothService
 from ignis.utils import Utils
 
-bt = BluetoothService.get_default()
-
 
 class BluetoothMenu(Widget.Box):
     def __init__(self):
@@ -82,12 +80,11 @@ class BluetoothMenu(Widget.Box):
     def _scan(self):
         self.bt.set_powered(True)
         self.bt.set_setup_mode(True)
-        Utils.Timeout(ms=10000, target=self.bt.set_setup_mode(False))
+        Utils.Timeout(ms=10000, target=lambda: self.bt.set_setup_mode(False))
 
     def update_menu(self):
         device_selections = []
         for device in self.bt.devices:
-            print(device.name)
             if device.name is not None:
                 device_selections.append(self.device_box(device))
 

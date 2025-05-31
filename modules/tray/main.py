@@ -3,36 +3,12 @@ from ignis.utils import Utils
 from ignis.services.upower import UPowerService
 from ignis.services.audio import AudioService
 from ignis.services.hyprland import HyprlandService
-from os import system as cmd
+from ignis.services.network import NetworkService
 
 from .bluetooth_menu import BluetoothMenu
 from .audio_menu import AudioMenu
+from .network_menu import NetworkMenu
 import datetime
-
-hypr = HyprlandService.get_default()
-upw = UPowerService.get_default()
-audio = AudioService.get_default()
-
-
-@Utils.run_in_thread
-def low_batt_warning(value, warning_thres: int = 15, critical_thres: int = 5):
-    global notified_battery
-    if int(value) > warning_thres:
-        notified_battery = False
-        return
-    if value <= critical_thres:
-        cmd(
-            f"notify-send System Battery\\ {int(value)}\\%\\ left\\.\\ Charge\\ now -i ~/.systemui/icons/system.png"
-        )
-        cmd("cvlc --play-and-exit ~/.config/ignis/sounds/notification.mp3")
-    if notified_battery:
-        return
-    if value > critical_thres and value <= warning_thres:
-        cmd(
-            f"notify-send System Low\\ battery\\,\\ {int(value)}\\%\\ left -i ~/.systemui/icons/system.png"
-        )
-        cmd("cvlc --play-and-exit ~/.config/ignis/sounds/notification.mp3")
-    notified_battery = True
 
 
 class chip_widget(Widget.EventBox):
@@ -59,17 +35,28 @@ class Tray(Widget.RevealerWindow):
     def __init__(self):
         ## Elements Variables
         self.notified_battery = False
-        self.clock_update = 1000 * 60
+        self.clock_rate = 1000 * 20
 
         ## Element Services
-        self.battery_device = upw.display_device
+        self.hyprS = HyprlandService.get_default()
+        self.upwS = UPowerService.get_default()
+        self.audioS = AudioService.get_default()
+        self.networkS = NetworkService.get_default()
+
+        self.battery_device = self.upwS.display_device
+        self.network_service = NetworkService.get_default()
+        self.network_service.wifi.set_enabled(True)
 
         ## Tray elements
-        self.bluetooth_toggle = self.BluetoothMenuToggle()
-        self.app_audio_mixer_toggle = self.AppAudioMixerToggle()
         self.bluetooth_menu = self.BluetoothRevealer()
         self.app_audio_mixer_menu = self.AppAudioMixerRevealer()
-        self.menus = [self.bluetooth_menu, self.app_audio_mixer_menu]
+        self.network_menu = self.NetworkRevealer()
+
+        self.bluetooth_toggle = self.BluetoothMenuToggle()
+        self.app_audio_mixer_toggle = self.AppAudioMixerToggle()
+        self.network_toggle = self.NetworkToggle()
+
+        self.menus = [self.bluetooth_menu, self.app_audio_mixer_menu, self.network_menu]
         self.clock_chip = self.ClockChip()
         self.battery_chip = self.BatteryChip()
         self.main_menu = self.MainMenu()
@@ -77,7 +64,7 @@ class Tray(Widget.RevealerWindow):
         self.tray_revealer = self.TrayRevealer()
 
         ## Element Update Triggers
-        audio.connect(
+        self.audioS.connect(
             "notify::apps",
             lambda x, y: self.app_audio_mixer_menu.child.update_menu(),
         )
@@ -95,6 +82,7 @@ class Tray(Widget.RevealerWindow):
             ),
             revealer=self.tray_revealer,
         )
+        Utils.Timeout(ms=1300, target=lambda: self.revealer.set_reveal_child(False))
 
     def MainTray(self) -> Widget.Box:
         tray_main = Widget.Box(
@@ -108,6 +96,7 @@ class Tray(Widget.RevealerWindow):
                         self.battery_chip,
                         self.app_audio_mixer_toggle,
                         self.bluetooth_toggle,
+                        self.network_toggle,
                     ],
                 ),
             ],
@@ -128,7 +117,7 @@ class Tray(Widget.RevealerWindow):
             minute = datetime.datetime.now().strftime("%M")
             return hour, minute
 
-        time_poll = Utils.Poll(timeout=self.clock_update, callback=lambda x: get_time())
+        time_poll = Utils.Poll(timeout=self.clock_rate, callback=lambda x: get_time())
         clock_widget = chip_widget(
             value=time_poll.bind("output", lambda x: f"{x[0]}\n{x[1]}"),
         )
@@ -140,9 +129,6 @@ class Tray(Widget.RevealerWindow):
             icon=self.battery_device.bind(
                 "charging", lambda value: "󰂄" if value else "󰁹"
             ),
-        )
-        self.battery_device.connect(
-            "notify::percent", lambda x, y: low_batt_warning(x.percent)
         )
         return battery_widget
 
@@ -205,6 +191,42 @@ class Tray(Widget.RevealerWindow):
             css_classes=["tray", "bt", "menu", "revealer"],
         )
 
+    def NetworkToggle(self):
+        def toggle_menu(active):
+            self.network_menu.set_reveal_child(active)
+            self.main_menu.reveal(active)
+
+        def get_icon() -> str:
+            if self.network_service.ethernet.is_connected:
+                return "󰈀 "
+            wifi_strenght = self.networkS.wifi.devices[0].ap.strength
+            if wifi_strenght == 0:
+                return "󰤭 "
+            if wifi_strenght <= 25:
+                return "󰤟 "
+            if wifi_strenght <= 50:
+                return "󰤢 "
+            if wifi_strenght <= 75:
+                return "󰤥 "
+            if wifi_strenght <= 100:
+                return "󰤨 "
+
+        toggle = Widget.ToggleButton(
+            hexpand=False,
+            halign="center",
+            child=Widget.Label(),
+            css_classes=["tray", "button"],
+            on_toggled=lambda x, active: toggle_menu(active),
+        )
+        self.networkS.wifi.devices[0].ap.connect(
+            "notify::strength", lambda x, y: toggle.child.set_label(get_icon())
+        )
+
+        return toggle
+
+    def NetworkRevealer(self) -> Widget.Revealer:
+        return Widget.Revealer(child=NetworkMenu(), transition_type="slide_down")
+
     def MainMenu(self):
         main_menu = Widget.Revealer(
             transition_type="slide_left",
@@ -214,7 +236,9 @@ class Tray(Widget.RevealerWindow):
                 child=self.menus,
                 css_classes=["tray", "menu-item"],
             ),
+            reveal_child=False,
         )
+        main_menu.set_reveal_child(False)
 
         def reveal(value: bool):
             if value:
