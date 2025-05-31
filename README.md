@@ -1,5 +1,5 @@
 # Ignis based workspace
-<img src="preview/v0.8.png">
+<img src="preview/v0.9.png">
 This is still in work at progress
 <br>
 Using screen 1920x1080
@@ -7,15 +7,15 @@ Using screen 1920x1080
 
 ## Features
 <br>
-- [x] Notification
+- [ x ] Notification
 <br>
-- [x] Taskbar/Tray
+- [ x ] Taskbar/Tray
 <br>
-- [x] Bluetooth UI
+- [ x ] Bluetooth UI
 <br>
-- [x] Individual apps audio control
+- [ x ] Individual apps audio control
 <br>
-- [x] Popup for audio and display brightness
+- [ x ] Popup for audio and display brightness
 <br>
 - [ ] WiFi UI
 <br>
