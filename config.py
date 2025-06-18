@@ -11,7 +11,7 @@ import modules.home_screen as home_screen_mod
 import modules.popup as popup_mod
 import modules.notification as notif_mod
 import modules.tray.main as tray_mod
-# import modules.power_menu as power_menu
+import modules.power_menu as power_menu
 
 from colors import ColorManager
 from modules import special_notif
@@ -38,7 +38,8 @@ sys.path.append(script_path)
 notif_mod.desktop_notification()
 home_screen_mod.home_screen(0)
 tray = tray_mod.Tray()
-# pmmenu = power_menu.main()
+pmmenu = power_menu.PowerMenu()
+pmmenu.window()
 
 audio = Widget.Window(
     namespace="Audio popups IGNIS",

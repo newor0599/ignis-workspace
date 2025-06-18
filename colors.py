@@ -19,6 +19,9 @@ def clamp_color(hex_color: str, max_clamp_value: int = 1, min_clamp_value: int =
 class ColorManager:
     def __init__(self, wallpaper_path: str, color_id=3):
         self.runable = True
+        if wallpaper_path.split(".")[-1] not in ("jpg", "jpeg", "png"):
+            self.runable = False
+            return None
         dark_cmd = [
             "hellwal",
             "-i",

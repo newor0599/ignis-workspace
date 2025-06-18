@@ -27,7 +27,7 @@ class chip_widget(Widget.EventBox):
             vertical=True,
             css_classes=["tray", "chip", "frame"],
             valign="start",
-            child=[value_label, icon_label if icon != "" else None],
+            child=[value_label, icon_label if icon != "" else ""],
         )
 
 
@@ -73,6 +73,7 @@ class Tray(Widget.RevealerWindow):
             namespace="tasktray IGNIS",
             css_classes=["tray-window"],
             anchor=["top", "right", "bottom"],
+            dynamic_input_region=True,
             child=Widget.EventBox(
                 child=[self.tray_revealer],
                 on_hover=lambda x: self.tray_revealer.set_reveal_child(True),

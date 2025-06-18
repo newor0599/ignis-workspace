@@ -8,15 +8,12 @@ battery_cd = False
 
 @Utils.run_in_thread
 def low_batt_warning():
-    print("Battery notif called")
     upwS = UPowerService.get_default()
     battery_device = upwS.display_device
-    print(battery_device.percent)
     battery_device.connect("notify::percent", lambda x, y: run(x.percent))
 
     def run(value, warning_thres: int = 15, critical_thres: int = 5):
         global battery_cd
-        print("Battery Special notification: ", value)
         if int(value) > warning_thres:
             battery_cd = False
             return

@@ -1,6 +1,7 @@
 from ignis.widgets import Widget
 from ignis.services.bluetooth import BluetoothService
 from ignis.utils import Utils
+import asyncio
 
 
 class BluetoothMenu(Widget.Box):
@@ -56,17 +57,15 @@ class BluetoothMenu(Widget.Box):
             lambda x, y: stateIcon.set_label(self.device_state(device)),
         )
 
-        @Utils.run_in_thread
-        def button_on_click(device):
+        def button_on_click(device) -> None:
             if not device.connected:
-                device.connect_to()
+                asyncio.create_task(device.connect_to())
+                print("Connecting")
             else:
-                device.disconnect_from()
+                asyncio.create_task(device.disconnect_from())
 
         box = Widget.EventBox(
-            on_click=lambda x, y, z=device: button_on_click(z),
-            on_hover=lambda x: box.add_css_class("hover"),
-            on_hover_lost=lambda x: box.remove_css_class("hover"),
+            on_click=lambda self, z=device: button_on_click(z),
             css_classes=[
                 "bt",
                 "device",
@@ -81,6 +80,7 @@ class BluetoothMenu(Widget.Box):
         self.bt.set_powered(True)
         self.bt.set_setup_mode(True)
         Utils.Timeout(ms=10000, target=lambda: self.bt.set_setup_mode(False))
+        Utils.Timeout(ms=10001, target=lambda: self.bt.set_powered(False))
 
     def update_menu(self):
         device_selections = []

@@ -29,7 +29,7 @@
   box-shadow: 0 0 5px 1px c.$ui-shadow;
   border-radius: 100px;
 
-  &.hover {
+  &:hover {
     background: c.$ui-aa;
   }
 }

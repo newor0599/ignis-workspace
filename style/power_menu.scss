@@ -19,26 +19,26 @@
     margin-left: 50rem;
     margin-right: 50rem;
     border-radius: 1rem;
-    box-shadow: 0px 0px 40rem 40rem c.$ui-shadow;
   }
 
   &.btn-rig {
     margin: 10px;
     min-width: 15rem;
     min-height: 15rem;
-    background: c.$ui-con;
+    background: c.$ui-ab;
     border-radius: calc(1rem - 5px);
     transition: .2s ease;
   }
 
   &.btn-rig:hover {
-    background: c.$ui-shadow;
+    background: c.$ui-aa;
   }
 
   &.opt.desc {
     color: c.$ui-con;
     font-size: 1.2rem;
     font-family: "Storopia";
+    margin-bottom: 1rem;
   }
 
   &.opt.icon {

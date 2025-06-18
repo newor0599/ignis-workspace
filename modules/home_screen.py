@@ -19,7 +19,7 @@ def update_clock():
 Utils.Poll(timeout=clock_rate, callback=lambda x: update_clock())
 
 
-def home_screen(monitor: int = 0):
+def home_screen(monitor: int = 0) -> Widget.Window:
     return Widget.Window(
         monitor=monitor,
         anchor=["bottom", "right"],
