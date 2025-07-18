@@ -1,0 +1,27 @@
+@use "../../colors" as c;
+
+.popup {
+  &.box {
+    padding: 1rem;
+    background: c.$ui-con;
+    margin: 2rem;
+    border-radius: 5rem;
+  }
+
+  &.label {
+    font-size: 1.3rem;
+    background: c.$ui-ab;
+    min-height: 2rem;
+    min-width: 2rem;
+    border-radius: 2rem;
+    margin-right: 1rem;
+    color: c.$ui-con;
+  }
+
+  &.scale {
+    all: unset;
+    min-width: 150px;
+    min-height: 1px;
+    border-radius: 32px;
+  }
+}

@@ -1,0 +1,4 @@
+animation_bezier.json
+*pycache*
+*/*pycache*
+*/*/*pycache*

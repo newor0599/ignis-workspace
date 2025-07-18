@@ -1,0 +1,23 @@
+@use "modules/tray/style.scss" as tray;
+@use "modules/popup/style.scss" as popup;
+@use "colors.scss" as colors;
+
+scale {
+  slider {
+    opacity: 0;
+  }
+
+  trough {
+    background: colors.$ui-ab;
+    border: none;
+    border-radius: 300px;
+
+    highlight {
+      background: colors.$ui-aa;
+      border: none;
+      border-radius: 100px;
+      min-height: 2rem;
+      min-width: 0px;
+    }
+  }
+}
