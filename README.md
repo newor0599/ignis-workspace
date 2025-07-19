@@ -4,11 +4,12 @@ This is still in work at progress
 
 ## Features
 <br>
-- [ ] Notification
-- [ ] Bluetooth UI
-- [ ] Individual apps audio control
-- [ ] WiFi UI
-- [ ] VPN UI
-- [ ] Powermenu
-- [x] Popup for audio and display brightness
-- [x] Taskbar/Tray
+
+- [ ] Notification <br>
+- [ ] Bluetooth UI <br>
+- [ ] Individual apps audio control <br>
+- [ ] WiFi UI <br>
+- [ ] VPN UI <br>
+- [ ] Powermenu <br>
+- [x] Popup for audio and display brightness <br>
+- [x] Taskbar/Tray <br>
