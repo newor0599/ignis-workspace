@@ -41,17 +41,22 @@ class MAIN:
             ),
         }
         self.audio.speaker.connect(
-            "notify::volume", lambda x, u: self.volume_change(x.volume / 100)
+            "notify::volume",
+            lambda x, u: self.volume_change(x.volume / 100, x.is_muted),
+        )
+        self.audio.speaker.connect(
+            "notify::is-muted",
+            lambda x, u: self.volume_change(x.volume / 100, x.is_muted),
         )
 
     def service_inits(self):
         self.audio = AudioService.get_default()
         self.backlight = BacklightService.get_default()
 
-    def volume_change(self, volume):
+    def volume_change(self, volume, muted):
         icons = "󰖁 ", "󰕿 ", "󰖀 ", "󰕾 ", "󱄡 "
         volume *= 100
-        if volume == 0 or type(volume) is not float:
+        if volume <= 0 or type(volume) is not float or muted:
             self.vol_state["icon"].value = icons[0]
         elif volume > 0 and volume <= 33:
             self.vol_state["icon"].value = icons[1]
