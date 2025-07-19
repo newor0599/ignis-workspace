@@ -11,9 +11,15 @@ class MAIN:
 
         # Backlight
         self.bl_state = {
+            "name": "bl",
             "visible": Variable(value=False),
             "icon": Variable(value=""),
             "value": Variable(value=0.5),
+            "change": lambda x: setattr(
+                self.backlight,
+                "brightness",
+                x.value * self.backlight.max_brightness,
+            ),
         }
         self.backlight.connect(
             "notify::brightness",
@@ -22,29 +28,43 @@ class MAIN:
             ),
         )
 
-    @Utils.debounce(1000)
-    def bl_timeout(self):
-        self.bl_state["visible"].value = False
+        # Volume
+        self.vol_state = {
+            "name": "vol",
+            "visible": Variable(value=False),
+            "icon": Variable(value=""),
+            "value": Variable(value=0.5),
+            "change": lambda x: setattr(
+                self.audio.speaker,
+                "volume",
+                x.value * 100,
+            ),
+        }
+        self.audio.speaker.connect(
+            "notify::volume", lambda x, u: self.volume_change(x.volume / 100)
+        )
 
     def service_inits(self):
         self.audio = AudioService.get_default()
         self.backlight = BacklightService.get_default()
-        # self.audio.speaker.connect(
-        #     "notify::description", lambda x, y: print(x.description)
-        # )
-        # self.audio.speaker.connect("notify::volume", lambda x, y: print(x.volume))
 
-    def get_vol_icon(self, volume):
+    def volume_change(self, volume):
         icons = "󰖁 ", "󰕿 ", "󰖀 ", "󰕾 ", "󱄡 "
-        if volume == 0 or type(volume) is not int:
-            return icons[0]
-        if volume > 0 and volume <= 33:
-            return icons[1]
-        if volume > 33 and volume <= 66:
-            return icons[2]
-        if volume > 66 and volume <= 100:
-            return icons[3]
-        return icons[-1]
+        volume *= 100
+        if volume == 0 or type(volume) is not float:
+            self.vol_state["icon"].value = icons[0]
+        elif volume > 0 and volume <= 33:
+            self.vol_state["icon"].value = icons[1]
+        elif volume > 33 and volume <= 66:
+            self.vol_state["icon"].value = icons[2]
+        elif volume > 66 and volume <= 100:
+            self.vol_state["icon"].value = icons[3]
+        elif volume > 100:
+            self.vol_state["icon"].value = icons[4]
+        volume /= 100
+        self.vol_state["visible"].value = True
+        self.vol_state["value"].value = volume
+        self.vol_popup_debounce()
 
     def brightness_change(self, brightness: int):
         icons = "󰃞 ", "󰃝 ", "󰃟 ", "󰃠 "
@@ -53,9 +73,10 @@ class MAIN:
         self.bl_state["value"].value = brightness
         self.bl_popup_debounce()
 
-    def bl_scale_change(self, value: float):
-        self.backlight.brightness = self.backlight.max_brightness * value
-
     @Utils.debounce(1000)
     def bl_popup_debounce(self):
         self.bl_state["visible"].value = False
+
+    @Utils.debounce(1000)
+    def vol_popup_debounce(self):
+        self.vol_state["visible"].value = False
