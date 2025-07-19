@@ -22,3 +22,54 @@ scale {
     }
   }
 }
+
+calendar {
+  all: unset;
+
+  &.view {
+    border-radius: calc(1rem + .6rem);
+    background: colors.$ui-ab;
+    border: none;
+    color: colors.$ui-con;
+    padding: .5rem;
+
+    & header {
+      all: unset;
+      background: none;
+      border-bottom: 2px solid #cccccc77;
+      color: colors.$ui-con;
+      padding-bottom: .5rem;
+
+      & button {
+        all: unset;
+        color: colors.$ui-con;
+        transition: .3s ease;
+      }
+
+      & button:hover {
+        color: colors.$ui-aa;
+      }
+    }
+
+    & grid {
+      label {
+        &.today {
+          all: unset;
+          border: none;
+          box-shadow: none;
+          background: colors.$ui-aa;
+          border-radius: 10rem;
+        }
+      }
+
+    }
+  }
+}
+
+calendar.view grid::selected {
+  all: unset;
+  border-radius: 5rem;
+  background: colors.$ui-con;
+  border: none;
+  color: colors.$ui-ab;
+}

@@ -3,6 +3,7 @@ from modules.popup.ui import main as popup
 from modules.watermark.ui import main as watermark
 from ignis.app import IgnisApp
 from os import path
+from ignis.widgets import Widget
 
 activation_watermark = False
 tray()
