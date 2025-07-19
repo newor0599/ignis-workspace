@@ -1,0 +1,31 @@
+@use 'colors';
+@use 'settings' as s;
+
+.popup {
+  &.frame {
+    border: none;
+    background: colors.$ui-con;
+    border-radius: 31px;
+    margin: 20px;
+    padding: calc(s.$popup-size*0.4);
+    box-shadow: 0 0 10px 2px colors.$ui-shadow;
+  }
+
+  &.scale {
+    all: unset;
+    min-width: 150px;
+    min-height: 1px;
+    border-radius: 32px;
+  }
+
+  &.icon {
+    box-shadow: 0 0 10px 2px colors.$ui-shadow;
+    background: colors.$ui-ab;
+    border-radius: 17px;
+    color: colors.$ui-con;
+    font-size: calc(s.$popup-size*0.7);
+    min-height: s.$popup-size;
+    min-width: s.$popup-size;
+    margin-right: 15px;
+  }
+}

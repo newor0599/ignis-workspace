@@ -1,0 +1,46 @@
+@use "style/home_screen.scss";
+@use "style/popup.scss";
+@use "style/notification.scss";
+@use "style/tray.scss";
+@use "style/app_audio_control_menu.scss";
+@use "style/bluetooth_menu.scss";
+@use "style/network_menu.scss";
+@use "style/power_menu.scss";
+@use "style/colors.scss";
+@use "style/settings.scss" as s;
+
+
+revealer,
+window {
+  background: #00000001;
+}
+
+/*
+*{
+  min-width: 0px;
+  min-height: 0px;
+}
+*/
+
+/* Scale Default Style */
+
+scale {
+  slider {
+    opacity: 0;
+  }
+
+  trough {
+    background: colors.$ui-ab;
+    border: none;
+    border-radius: 300px;
+    box-shadow: 0 0 5px 3px colors.$ui-shadow;
+
+    highlight {
+      background: colors.$ui-aa;
+      border: none;
+      border-radius: 100px;
+      min-height: s.$popup-size;
+      min-width: 0px;
+    }
+  }
+}

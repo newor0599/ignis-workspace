@@ -1,0 +1,51 @@
+@use 'colors' as c;
+@use 'settings' as s;
+
+.notif {
+  &.main {
+    min-width: s.$notification-width;
+    min-height: s.$notification-min-height;
+    padding: 20px;
+    margin: 10px;
+    background: c.$ui-con;
+    border-radius: 20px;
+    box-shadow: 0 0 5px 5px c.$ui-shadow;
+  }
+
+  &.top-right {
+    margin-left: 10px;
+  }
+
+  &.app-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: c.$ui-ab;
+  }
+
+  &.body {
+    font-size: 17px;
+    color: c.$ui-aa;
+  }
+
+  &.action {
+    border-radius: 100px;
+    margin-left: 10px;
+    margin-top: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: none;
+    box-shadow: 0 0 10px 5px c.$ui-shadow;
+    background: c.$ui-aa;
+    color: c.$ui-con;
+  }
+
+  &.image {
+    border: 2px solid c.$ui-ab;
+    border-radius: 10px;
+    margin-top: 5px;
+  }
+
+  &.icon {
+    border-radius: 100px;
+  }
+}
