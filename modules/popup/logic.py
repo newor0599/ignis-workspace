@@ -5,61 +5,57 @@ import asyncio
 from ignis.utils import Utils
 
 
-class POPUP:
-    def __init__(self, service, signal_name: str):
-        self.visible = Variable(value=False)
-        self.visible_cooldown = None
-        self.service = service
-        self.signal_name = signal_name
-        self.icon = Variable(value="")
-        self.service.connect(
-            f"notify::{self.signal_name}", lambda x, y: self.visible_true()
-        )
-
-    @Utils.debounce(1000)
-    def visible_timeout(self):
-        self.visible.value = False
-
-    def visible_true(self):
-        self.visible.value = True
-        self.visible_timeout()
-
-
 class MAIN:
     def __init__(self):
         self.service_inits()
-        self.bl_visible_cd = None
-        self.bl_visible = Variable(value=False)
+
+        # Backlight
+        self.bl_state = {
+            "visible": Variable(value=False),
+            "icon": Variable(value=""),
+            "value": Variable(value=0.5),
+        }
         self.backlight.connect(
-            "notify::brightness", lambda x, y: self.bl_visible_manager()
+            "notify::brightness",
+            lambda x, y: self.brightness_change(
+                x.brightness / self.backlight.max_brightness
+            ),
         )
-        self.bl_icon = self.backlight.bind("brightness", lambda x: self.get_bl_icon())
-        self.bl_popup = POPUP(self.backlight, "brightness")
+
+    @Utils.debounce(1000)
+    def bl_timeout(self):
+        self.bl_state["visible"].value = False
 
     def service_inits(self):
         self.audio = AudioService.get_default()
         self.backlight = BacklightService.get_default()
+        # self.audio.speaker.connect(
+        #     "notify::description", lambda x, y: print(x.description)
+        # )
+        # self.audio.speaker.connect("notify::volume", lambda x, y: print(x.volume))
 
-    def get_vol_icon(self):
+    def get_vol_icon(self, volume):
         icons = "󰖁 ", "󰕿 ", "󰖀 ", "󰕾 ", "󱄡 "
-        vol = int(self.speaker.value.volume / 100 // 4)
-        print(vol)
+        if volume == 0 or type(volume) is not int:
+            return icons[0]
+        if volume > 0 and volume <= 33:
+            return icons[1]
+        if volume > 33 and volume <= 66:
+            return icons[2]
+        if volume > 66 and volume <= 100:
+            return icons[3]
+        return icons[-1]
 
-    def get_bl_icon(self):
+    def brightness_change(self, brightness: int):
         icons = "󰃞 ", "󰃝 ", "󰃟 ", "󰃠 "
-        percent = int(
-            self.backlight.brightness / self.backlight.max_brightness * 10 // 3
-        )
-        return icons[percent]
+        self.bl_state["icon"].value = icons[int(brightness * 10 // 3)]
+        self.bl_state["visible"].value = True
+        self.bl_state["value"].value = brightness
+        self.bl_popup_debounce()
 
     def bl_scale_change(self, value: float):
         self.backlight.brightness = self.backlight.max_brightness * value
 
-    def bl_visible_manager(self):
-        if self.bl_visible_cd is not None:
-            self.bl_visible_cd.cancel()
-        self.bl_visible.value = True
-        self.bl_visible_cd = Utils.Timeout(
-            ms=1000,
-            target=lambda: setattr(self.bl_visible, "value", False),
-        )
+    @Utils.debounce(1000)
+    def bl_popup_debounce(self):
+        self.bl_state["visible"].value = False

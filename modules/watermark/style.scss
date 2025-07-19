@@ -1,0 +1,19 @@
+@use "../../colors.scss" as c;
+
+window {
+  background: #00000001;
+}
+
+.watermark {
+  color: #ddd;
+  font-size: 1.5rem;
+  opacity: .6;
+
+  &.mini {
+    font-size: .9rem;
+  }
+
+  &.box {
+    margin: 3rem;
+  }
+}
