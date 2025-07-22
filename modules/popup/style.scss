@@ -3,19 +3,19 @@
 .popup {
   &.box {
     padding: 1rem;
-    background: c.$ui-con;
+    background: c.$ui-ab;
     margin: 2rem;
     border-radius: 5rem;
   }
 
   &.label {
     font-size: 1.3rem;
-    background: c.$ui-ab;
+    background: c.$ui-con;
     min-height: 2rem;
     min-width: 2rem;
     border-radius: 2rem;
     margin-right: 1rem;
-    color: c.$ui-con;
+    color: c.$ui-ab;
   }
 
   &.scale {
@@ -23,5 +23,9 @@
     min-width: 150px;
     min-height: 1px;
     border-radius: 32px;
+  }
+
+  scale trough {
+    background: c.$ui-con;
   }
 }
