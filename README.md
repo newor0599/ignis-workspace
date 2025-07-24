@@ -1,13 +1,13 @@
 # Ignis based workspace
-<img src="preview/v0.91.png">
-This is still in work at progress
+<img src="preview/v0.92.png">
+This is still in work at progress and very unstable
 
 ## Features
 <br>
 
 - [ ] Notification <br>
 - [ ] Bluetooth UI <br>
-- [ ] Individual apps audio control <br>
+- [ ] Audio control <br>
 - [ ] WiFi UI <br>
 - [ ] VPN UI <br>
 - [ ] Powermenu <br>
