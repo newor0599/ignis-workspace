@@ -1,6 +1,7 @@
 @use "modules/tray/style.scss" as tray;
 @use "modules/popup/style.scss" as popup;
 @use "modules/watermark/style.scss" as watermark;
+@use "modules/test/style.scss" as test;
 @use "colors.scss" as colors;
 
 scale {
@@ -61,15 +62,61 @@ calendar {
           border-radius: 10rem;
         }
       }
-
     }
   }
 }
 
-calendar.view grid::selected {
+calendar grid label.day-number:selected {
   all: unset;
   border-radius: 5rem;
-  background: colors.$ui-con;
+  background: rgba(colors.$ui-aa, .5);
   border: none;
-  color: colors.$ui-ab;
+  color: colors.$ui-con;
+  outline: none;
+}
+
+dropdown,
+dropdown *,
+dropdown * *,
+popover *,
+popover {
+  all: unset;
+  transition: .3s ease;
+}
+
+dropdown {
+  border-radius: 100px;
+  background: colors.$ui-aa;
+  color: colors.$ui-con;
+}
+
+dropdown button {
+  padding: 0;
+  border-radius: 100px;
+  padding: .5rem;
+}
+
+dropdown button label {
+  margin-bottom: -1.1rem;
+}
+
+dropdown button arrow {
+  -gtk-icon-source: -gtk-icontheme("pan-down-symbolic");
+  color: colors.$ui-con;
+  padding: 0;
+  /* margin-top: .5rem; */
+  margin-bottom: -.5rem;
+}
+
+popover.menu {
+  transition: .3s ease;
+  background: colors.$ui-aa;
+  color: colors.$ui-con;
+  margin-top: .4rem;
+  border-radius: 1rem;
+}
+
+popover.menu contents {
+  padding: .5rem;
+  margin-bottom: -1rem;
 }
