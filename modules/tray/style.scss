@@ -61,53 +61,41 @@ tooltip {
   border: none;
 }
 
-.menu {
-  &.title {
+revealer.tray-menu {
+  & .title {
     all: unset;
     color: c.$ui-con;
-    background: c.$ui-ab;
+    background: c.$ui-aa;
     padding: .4rem;
     font-size: 1.5rem;
     font-weight: 700;
-    border-radius: 5rem;
-    /* margin-bottom: $bar-dist; */
+    border-radius: calc($chip-size / 2 + $bar-dist);
     font-family: "Lettera Mono LL Cond Light";
+    margin-bottom: $bar-dist;
   }
 
-  &.revealer {
+  & box {
+    padding-bottom: $bar-dist;
+  }
+
+  & box .box,
+  calendar {
+    background: c.$ui-ab;
     border-radius: 1rem;
-  }
-
-  &.main {
-    margin-bottom: 1rem;
-  }
-
-  &.batt {
-    & box {
-      /* padding: 0 1rem 0 1rem; */
-      padding: 1rem;
-      border-radius: 1rem;
-      background: c.$ui-ab;
-
-      & label {
-        font-size: 1.3rem;
-      }
-
-
-      & .icon {
-        font-size: 2.5rem;
-        margin-right: 1rem
-      }
-
-      & scale trough {
-        background: c.$ui-con;
-
-        highlight {
-          background: c.$ui-aa;
-        }
-      }
-    }
-
+    padding: $bar-dist;
+    margin-bottom: $bar-dist;
     color: c.$ui-con;
+
+    & .icon {
+      font-size: 2rem;
+      margin-right: $bar-dist;
+      color: c.$ui-con;
+    }
+  }
+
+  scale {
+    trough {
+      background: c.$ui-con;
+    }
   }
 }

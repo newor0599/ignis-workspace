@@ -8,7 +8,12 @@ from . import logic
 class BAR(hitboxes.BAR, menus.BAR, chips.BAR, logic.BAR):
     def tray(self):
         chips = Widget.Box(
-            child=[self.ClockChip(), self.DateChip(), self.BatteryChip()],
+            child=[
+                self.ClockChip(),
+                self.DateChip(),
+                self.BatteryChip(),
+                self.MixerChip(),
+            ],
             # halign="end",
             vexpand=True,
             css_classes=["chip-main"],
@@ -16,10 +21,13 @@ class BAR(hitboxes.BAR, menus.BAR, chips.BAR, logic.BAR):
         )
         menus = Widget.Revealer(
             child=Widget.Box(
-                child=[self.DateMenu(), self.BatteryMenu()],
+                child=[
+                    self.DateMenu(),
+                    self.BatteryMenu(),
+                    self.MixerMenu(),
+                ],
                 css_classes=["menu-main"],
                 vertical=True,
-                # spacing=10,
             ),
             reveal_child=self.visible["menus"].bind("value"),
             css_classes=["menu-revealer"],

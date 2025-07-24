@@ -39,7 +39,7 @@ class BAR(logic.BAR):
                     ),
                     Widget.Label(
                         label=self.laptop_batt.bind(
-                            "energy_rate", lambda x: str(int(x)) + "w"
+                            "percent", lambda x: str(int(x)) + "%"
                         )
                     ),
                 ],
@@ -73,6 +73,37 @@ class BAR(logic.BAR):
                     self.visible["date_menu"],
                     "value",
                     not self.visible["date_menu"].value,
+                ),
+                self.menu_visibility(),
+            ),
+        )
+
+    def MixerChip(self):
+        return Widget.Button(
+            child=Widget.EventBox(
+                child=[
+                    Widget.Label(
+                        label=" ",
+                        halign="center",
+                    ),
+                    Widget.Label(
+                        label=self.audio.speaker.bind(
+                            "volume",
+                            lambda x: str(x),
+                        ),
+                        halign="center",
+                    ),
+                ],
+                halign="center",
+                valign="center",
+                vertical=True,
+            ),
+            css_classes=["tray", "chip"],
+            on_click=lambda x: (
+                setattr(
+                    self.visible["mixer_menu"],
+                    "value",
+                    not self.visible["mixer_menu"].value,
                 ),
                 self.menu_visibility(),
             ),
