@@ -6,11 +6,11 @@ from ignis.app import IgnisApp
 from os import path
 
 # Test
-test_flag = True
+test_flag = False
 try:
     from modules.test.ui import main as test
 
-    test_flag = not test_flag
+    test_flag = True
 except:
     print("Skip test")
 

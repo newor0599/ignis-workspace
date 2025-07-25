@@ -1,7 +1,6 @@
 @use "modules/tray/style.scss" as tray;
 @use "modules/popup/style.scss" as popup;
 @use "modules/watermark/style.scss" as watermark;
-@use "modules/test/style.scss" as test;
 @use "colors.scss" as colors;
 
 scale {
@@ -113,7 +112,7 @@ popover.menu {
   background: colors.$ui-aa;
   color: colors.$ui-con;
   margin-top: .4rem;
-  border-radius: 1rem;
+  border-radius: 1.3rem;
 }
 
 popover.menu contents {
