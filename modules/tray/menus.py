@@ -88,7 +88,7 @@ class BAR(logic.BAR):
             vertical=True,
             vexpand=True,
             css_classes=["app-mixer"],
-            tooltip_text=stream.description,
+            tooltip_text=f"Name: {stream.description}",
             child=[
                 Widget.Scale(
                     vertical=True,

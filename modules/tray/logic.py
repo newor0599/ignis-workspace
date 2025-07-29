@@ -80,7 +80,7 @@ class BAR:
         searched = self.applications.search(apps, app_name)
         if len(searched) <= 0:
             print(app_name, "has no icon")
-            return "app.zen_browser.zen"
+            return "application-x-executable"
         print(searched[0].icon)
         return searched[0].icon
 

@@ -102,7 +102,11 @@ revealer.tray-menu {
   }
 }
 
+.app-mixer {
+  margin-right: $bar-dist;
+}
+
 .app-mixer scale {
-  margin-bottom: calc($bar-dist);
-  transform: rotate(180deg)
+  margin-bottom: $bar-dist;
+  transform: rotate(180deg);
 }
