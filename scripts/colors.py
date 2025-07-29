@@ -75,7 +75,11 @@ class ColorManager:
         }
 
     def get_wall_path(self):
-        path = run(["swww", "query"], capture_output=True, text=True).stdout
+        path = run(["swww", "query"], capture_output=True, text=True)
+        if path.stderr != "":
+            print("swww not installed!")
+            return
+        path = path.stdout
         path = path[path.find("image: ") + 7 :].strip()
         return path
 
