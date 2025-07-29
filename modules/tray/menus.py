@@ -90,10 +90,6 @@ class BAR(logic.BAR):
             css_classes=["app-mixer"],
             tooltip_text=stream.description,
             child=[
-                Widget.Icon(
-                    image=self.get_app_icon(stream.description),
-                    pixel_size=30,
-                ),
                 Widget.Scale(
                     vertical=True,
                     max=1,
@@ -101,6 +97,10 @@ class BAR(logic.BAR):
                     value=stream.bind("volume", lambda x: x / 100),
                     on_change=lambda x: setattr(stream, "volume", x.value * 100),
                     vexpand=True,
+                ),
+                Widget.Icon(
+                    image=self.get_app_icon(stream.description),
+                    pixel_size=30,
                 ),
             ],
         )

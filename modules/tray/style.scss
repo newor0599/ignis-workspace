@@ -88,7 +88,7 @@ revealer.tray-menu {
 
     & .icon {
       font-size: 2rem;
-      margin-right: $bar-dist;
+      margin-right: calc($bar-dist * 2);
       color: c.$ui-con;
     }
   }
@@ -103,5 +103,6 @@ revealer.tray-menu {
 }
 
 .app-mixer scale {
-  margin-top: calc($bar-dist);
+  margin-bottom: calc($bar-dist);
+  transform: rotate(180deg)
 }
