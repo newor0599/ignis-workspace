@@ -69,7 +69,7 @@ revealer.tray-menu {
     padding: .4rem;
     font-size: 1.5rem;
     font-weight: 700;
-    border-radius: calc($chip-size / 2 + $bar-dist);
+    border-radius: calc(1rem + $bar-dist);
     font-family: "Lettera Mono LL Cond Light";
     margin-bottom: $bar-dist;
   }
@@ -81,7 +81,7 @@ revealer.tray-menu {
   & box .box,
   calendar {
     background: c.$ui-ab;
-    border-radius: 1rem;
+    border-radius: calc($bar-dist + 1rem);
     padding: $bar-dist;
     margin-bottom: $bar-dist;
     color: c.$ui-con;
@@ -92,10 +92,16 @@ revealer.tray-menu {
       color: c.$ui-con;
     }
   }
+}
 
-  scale {
-    trough {
-      background: c.$ui-con;
-    }
+.box.apps-mixer {
+  min-height: 10rem;
+
+  & box {
+    padding-bottom: 0;
   }
+}
+
+.app-mixer scale {
+  margin-top: calc($bar-dist);
 }

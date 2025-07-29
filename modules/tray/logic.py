@@ -2,6 +2,8 @@ from ignis.variable import Variable
 from ignis.utils import Utils
 from ignis.services.upower import UPowerService
 from ignis.services.audio import AudioService
+
+from ignis.services.applications import ApplicationsService
 import datetime
 
 
@@ -44,26 +46,43 @@ class BAR:
 
         # Audio
         self.speakers = {}
-        self.mics = {}
+        self.sources = {}
         self.audio.connect("notify::speakers", lambda x, y: self.update_speakers())
-        self.audio.connect("notify::microphones", lambda x, y: self.update_mics())
+        self.audio.connect("notify::microphones", lambda x, y: self.update_sources())
         self.speaker_list = Variable(value=[])
-        self.mic_list = Variable(value=[])
+        self.source_list = Variable(value=[])
+        self.source_icon = Variable(value="")
+        self.audio.microphone.connect(
+            "notify::is-muted", lambda x, y: self.get_source_icon()
+        )
+        self.apps_mixer = []
 
-    def calc_batt_life(self):
+    def calc_batt_life(self) -> str:
         life = self.laptop_batt.time_remaining / 60
         string = ""
         if life >= 60:
             string += f"{str(int(life // 60))} hour "
         if int(life % 60) > 0:
             string += f"{str(int(life % 60))} min "
-        string += "left"
+        if string != "":
+            string += "left"
         self.battery_life.value = string
+        return string
 
     def service_inits(self):
         self.upower = UPowerService.get_default()
         self.laptop_batt = self.upower.display_device
         self.audio = AudioService.get_default()
+        self.applications = ApplicationsService.get_default()
+
+    def get_app_icon(self, app_name: str):
+        apps = self.applications.apps
+        searched = self.applications.search(apps, app_name)
+        if len(searched) <= 0:
+            print(app_name, "has no icon")
+            return "app.zen_browser.zen"
+        print(searched[0].icon)
+        return searched[0].icon
 
     def get_batt_icon(self) -> str:
         percent = int(self.laptop_batt.percent // 10)
@@ -96,24 +115,28 @@ class BAR:
 
     def update_speakers(self):
         speakers = self.audio.speakers
-        self.speaker_list.value = []
+        default = self.audio.speaker.description
         speaker_list = []
         for i in speakers:
             self.speakers[i.description] = i
             speaker_list.append(i.description)
+        speaker_list.remove(default)
+        speaker_list = [default] + speaker_list
         self.speaker_list.value = speaker_list
 
-    def update_mics(self):
-        mics = self.audio.microphones
-        self.mic_list.value = []
-        mics_list = []
-        for i in mics:
-            self.mics[i.description] = i
-            mics_list.append(i.description)
-        self.mic_list.value = mics_list
+    def update_sources(self):
+        sources = self.audio.microphones
+        sources_list = []
+        default = self.audio.microphone.description
+        for i in sources:
+            self.sources[i.description] = i
+            sources_list.append(i.description)
+        sources_list.remove(default)
+        sources_list = [default] + sources_list
+        self.source_list.value = sources_list
 
-    def change_speaker(self, speaker_description: str):
-        self.audio.speaker = self.speakers[speaker_description]
-
-    def change_mic(self, mic_description: str):
-        self.audio.microphone = self.mics[mic_description]
+    def get_source_icon(self):
+        if self.audio.microphone.is_muted:
+            self.source_icon.value = "󰍭"
+            return
+        self.source_icon.value = ""

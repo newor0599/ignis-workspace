@@ -1,3 +1,4 @@
+from ignis.services.audio import Stream
 from ignis.widgets import Widget
 from . import logic
 
@@ -37,14 +38,15 @@ class BAR(logic.BAR):
         source = Widget.Box(
             child=[
                 Widget.Label(label="󱄉 ", css_classes=["icon"]),
-                # Widget.Label(label=self.laptop_batt.bind())
             ]
         )
         power = Widget.Box(
             child=[
-                Widget.Label(label="󱐋", css_classes=["icon"]),
+                Widget.Label(label="󱐋 ", css_classes=["icon"]),
                 Widget.Label(
-                    label=self.laptop_batt.bind("energy-rate", lambda x: str(x) + "w")
+                    label=self.laptop_batt.bind(
+                        "energy-rate", lambda x: str(round(x, 2)) + "w"
+                    )
                 ),
             ],
             css_classes=["box"],
@@ -64,7 +66,6 @@ class BAR(logic.BAR):
         title = Widget.Label(
             label="Date",
             css_classes=["title"],
-            # halign="center",
         )
         cal = Widget.Calendar()
         revealer = Widget.Revealer(
@@ -82,35 +83,59 @@ class BAR(logic.BAR):
         )
         return revealer
 
+    def AppMixer(self, stream: Stream):
+        return Widget.Box(
+            vertical=True,
+            vexpand=True,
+            css_classes=["app-mixer"],
+            tooltip_text=stream.description,
+            child=[
+                Widget.Icon(
+                    image=self.get_app_icon(stream.description),
+                    pixel_size=30,
+                ),
+                Widget.Scale(
+                    vertical=True,
+                    max=1,
+                    step=0.05,
+                    value=stream.bind("volume", lambda x: x / 100),
+                    on_change=lambda x: setattr(stream, "volume", x.value * 100),
+                    vexpand=True,
+                ),
+            ],
+        )
+
     def MixerMenu(self):
         title = Widget.Label(label="Mixer", css_classes=["title"])
         speaker_list = Widget.DropDown(
             items=self.speaker_list.bind("value"),
-            on_selected=lambda x, y: self.change_speaker(y),
+            on_selected=lambda x, y: setattr(self.audio, "speaker", self.speakers[y]),
         )
         mic_list = Widget.DropDown(
-            items=self.mic_list.bind("value"),
-            on_selected=lambda x, y: self.change_mic(y),
+            items=self.source_list.bind("value"),
+            on_selected=lambda x, y: setattr(self.audio, "microphone", self.sources[y]),
         )
+        speaker_scale = Widget.Box(
+            child=[
+                Widget.Label(label="󰓃", css_classes=["icon"]),
+                Widget.Scale(
+                    max=1,
+                    step=0.05,
+                    value=self.audio.speaker.bind(
+                        "volume",
+                        lambda x: x / 100,
+                    ),
+                    on_change=lambda x: setattr(
+                        self.audio.speaker, "volume", x.value * 100
+                    ),
+                    hexpand=True,
+                ),
+            ],
+        )
+
         default_speaker = Widget.Box(
             child=[
-                Widget.Box(
-                    child=[
-                        Widget.Label(label="󰓃", css_classes=["icon"]),
-                        Widget.Scale(
-                            max=1,
-                            step=0.05,
-                            value=self.audio.speaker.bind(
-                                "volume",
-                                lambda x: x / 100,
-                            ),
-                            on_change=lambda x: setattr(
-                                self.audio.speaker, "volume", x.value * 100
-                            ),
-                            hexpand=True,
-                        ),
-                    ],
-                ),
+                speaker_scale,
                 speaker_list,
             ],
             vertical=True,
@@ -121,7 +146,10 @@ class BAR(logic.BAR):
             child=[
                 Widget.Box(
                     child=[
-                        Widget.Label(label="", css_classes=["icon"]),
+                        Widget.Label(
+                            label=self.source_icon.bind("value"),
+                            css_classes=["icon"],
+                        ),
                         Widget.Scale(
                             max=1,
                             step=0.05,
@@ -142,11 +170,22 @@ class BAR(logic.BAR):
             css_classes=["box"],
         )
 
+        apps_control = Widget.Box(css_classes=["apps-mixer", "box"])
+        self.audio.connect(
+            "notify::apps",
+            lambda x, y: setattr(
+                apps_control,
+                "child",
+                [self.AppMixer(i) for i in x.apps],
+            ),
+        )
+
         grouper = Widget.Box(
             child=[
                 title,
                 default_speaker,
                 default_mic,
+                apps_control,
             ],
             vertical=True,
         )

@@ -5,7 +5,7 @@ from . import hitboxes
 from . import logic
 
 
-class BAR(hitboxes.BAR, menus.BAR, chips.BAR, logic.BAR):
+class BAR(menus.BAR, hitboxes.BAR, chips.BAR, logic.BAR):
     def tray(self):
         chips = Widget.Box(
             child=[

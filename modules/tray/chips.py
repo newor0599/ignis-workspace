@@ -57,7 +57,9 @@ class BAR(logic.BAR):
             ),
             tooltip_text=self.laptop_batt.bind_many(
                 ["energy_rate", "percent", "time_remaining"],
-                lambda x, y, z: f"{round(y)}%\n{round(x, 2)}w\n{z // 60}min",
+                lambda x,
+                y,
+                z: f"{round(y)}%\n{round(x, 2)}w\n{self.calc_batt_life().replace(' hour', 'h').replace(' min', 'm').replace(' left', '')}",
             ),
         )
 
