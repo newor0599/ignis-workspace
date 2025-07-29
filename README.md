@@ -1,5 +1,5 @@
 # Ignis based workspace
-<img src="preview/v0.92.png">
+<img src="preview/v0.93.png">
 This is still in work at progress and very unstable
 
 ## Features
