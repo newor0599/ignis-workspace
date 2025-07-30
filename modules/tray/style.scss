@@ -110,3 +110,9 @@ revealer.tray-menu {
   margin-bottom: $bar-dist;
   transform: rotate(180deg);
 }
+
+.app-mixer image {
+  background: c.$ui-aa;
+  min-height: 2rem;
+  border-radius: 1rem;
+}

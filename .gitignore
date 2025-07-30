@@ -1,8 +1,0 @@
-.gitignore
-animation_bezier.json
-*pycache*
-*/*pycache*
-*/*/*pycache*
-media/wallpapers/*
-modules/test
-scripts/wallpaper.py

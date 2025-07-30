@@ -16,13 +16,14 @@ scale {
     border: none;
     border-radius: 300px;
     min-width: 2rem;
+    min-height: 2rem;
 
     highlight {
       background: colors.$ui-aa;
       border: none;
       border-radius: 100px;
-      min-height: 2rem;
       min-width: 0px;
+      min-height: 0px;
     }
   }
 }

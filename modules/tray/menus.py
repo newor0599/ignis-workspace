@@ -35,11 +35,6 @@ class BAR(logic.BAR):
             ],
             css_classes=["box"],
         )
-        source = Widget.Box(
-            child=[
-                Widget.Label(label="󱄉 ", css_classes=["icon"]),
-            ]
-        )
         power = Widget.Box(
             child=[
                 Widget.Label(label="󱐋 ", css_classes=["icon"]),
@@ -88,7 +83,7 @@ class BAR(logic.BAR):
             vertical=True,
             vexpand=True,
             css_classes=["app-mixer"],
-            tooltip_text=f"Name: {stream.name}",
+            tooltip_text=f"Name: {stream.name}\nApp: {stream.description}",
             child=[
                 Widget.Scale(
                     vertical=True,
@@ -100,7 +95,7 @@ class BAR(logic.BAR):
                 ),
                 Widget.Icon(
                     image=self.get_app_icon(stream.name),
-                    pixel_size=30,
+                    pixel_size=20,
                 ),
             ],
         )
@@ -170,13 +165,16 @@ class BAR(logic.BAR):
             css_classes=["box"],
         )
 
-        apps_control = Widget.Box(css_classes=["apps-mixer", "box"])
+        apps_control = Widget.Box(
+            css_classes=["apps-mixer", "box"],
+            child=[Widget.Scroll(hexpand=True)],
+        )
         self.audio.connect(
             "notify::apps",
             lambda x, y: setattr(
-                apps_control,
+                apps_control.child[0],
                 "child",
-                [self.AppMixer(i) for i in x.apps],
+                Widget.Box(child=[self.AppMixer(i) for i in x.apps]),
             ),
         )
 
