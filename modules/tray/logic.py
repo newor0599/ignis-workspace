@@ -79,9 +79,7 @@ class BAR:
         apps = self.applications.apps
         searched = self.applications.search(apps, app_name)
         if len(searched) <= 0:
-            print(app_name, "has no icon")
             return "application-x-executable"
-        print(searched[0].icon)
         return searched[0].icon
 
     def get_batt_icon(self) -> str:

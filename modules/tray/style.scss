@@ -12,10 +12,6 @@ window {
   padding: 7px;
 }
 
-revealer {
-  transition: cubic-bezier(0.666, 0, 0.4, 1.2);
-}
-
 .tray.chip {
   all: unset;
   min-width: $chip-size;
@@ -50,6 +46,7 @@ tooltip {
 
 .tray-main {
   background: c.$ui-con;
+  /* background: linear-gradient(30deg, c.$ui-ab 10%, c.$ui-con 40%, c.$ui-con 100%); */
   padding: $bar-dist;
   margin: 1rem;
   border-radius: 2.1rem;
@@ -72,6 +69,7 @@ revealer.tray-menu {
     border-radius: calc(1rem + $bar-dist);
     font-family: "Lettera Mono LL Cond Light";
     margin-bottom: $bar-dist;
+    background: linear-gradient(30deg, c.$ui-ab, c.$ui-aa 60%);
   }
 
   & box {
@@ -95,7 +93,7 @@ revealer.tray-menu {
 }
 
 .box.apps-mixer {
-  min-height: 10rem;
+  min-height: 12rem;
 
   & box {
     padding-bottom: 0;
