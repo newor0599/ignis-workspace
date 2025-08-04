@@ -1,7 +1,6 @@
 from ignis.variable import Variable
 from ignis.services.audio import AudioService
 from ignis.services.backlight import BacklightService
-import asyncio
 from ignis.utils import Utils
 
 
