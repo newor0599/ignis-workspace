@@ -13,3 +13,8 @@ This is still in work at progress and very unstable
 - [ ] Powermenu <br>
 - [x] Popup for audio and display brightness <br>
 - [x] Taskbar/Tray <br>
+
+## Dependencies
+<br>
+
+- hellwal (color generator)
