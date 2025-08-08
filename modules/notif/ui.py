@@ -1,16 +1,7 @@
 from ignis.utils import Utils
 from . import logic
 from ignis.widgets import Widget
-from ignis.variable import Variable
 from os.path import expanduser
-
-
-class NOTIFICATION:
-    def __init__(self):
-        self.app_name = "System"
-        self.summary = "battery notification"
-        self.body = "Battery is at 15%, Charge now"
-        self.icon = "/home/newor/.config/ignis/media/icons/system.png"
 
 
 def NOTIF_POPUP(notif):

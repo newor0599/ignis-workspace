@@ -33,8 +33,8 @@ class MAIN(logic.MAIN):
         )
 
     def ui(self):
-        bl_popup = self.popup(self.bl_state)
-        vol_popup = self.popup(self.vol_state)
+        self.popup(self.bl_state)
+        self.popup(self.vol_state)
 
 
 def main():
