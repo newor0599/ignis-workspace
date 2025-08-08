@@ -169,12 +169,29 @@ class BAR(logic.BAR):
             css_classes=["apps-mixer", "box"],
             child=[Widget.Scroll(hexpand=True)],
         )
+
+        def apps_list(apps):
+            if len(apps) <= 0:
+                return [
+                    Widget.Label(
+                        label=" No audio is currently playing",
+                        valign="start",
+                    )
+                ]
+            return [self.AppMixer(i) for i in apps]
+
+        setattr(
+            apps_control.child[0],
+            "child",
+            Widget.Box(child=apps_list(self.audio.apps)),
+        )
+
         self.audio.connect(
             "notify::apps",
             lambda x, y: setattr(
                 apps_control.child[0],
                 "child",
-                Widget.Box(child=[self.AppMixer(i) for i in x.apps]),
+                Widget.Box(child=apps_list(x.apps)),
             ),
         )
 

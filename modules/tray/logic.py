@@ -41,7 +41,7 @@ class BAR:
         )
         Utils.Poll(
             self.time["clock_refresh_rate"],
-            lambda x: self.update_time(),
+            lambda x: self.get_time(),
         )
 
         # Audio
@@ -66,6 +66,8 @@ class BAR:
             string += f"{str(int(life % 60))} min "
         if string != "":
             string += "left"
+        if string == "":
+            string += "Unavailable"
         self.battery_life.value = string
         return string
 
@@ -94,7 +96,7 @@ class BAR:
         batt_level_code = 0x000F007A
         return chr(batt_level_code + percent - 1)
 
-    def update_time(self):
+    def get_time(self):
         now = datetime.datetime.now()
         hour = now.strftime("%H")
         minute = now.strftime("%M")

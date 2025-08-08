@@ -20,6 +20,7 @@ scale {
 
     highlight {
       background: colors.$ui-aa;
+      /* background: linear-gradient(120deg, colors.$ui-ab, colors.$ui-aa 40%, colors.$ui-aa 60%, colors.$ui-ab 100%); */
       border: none;
       border-radius: 100px;
       min-width: 0px;

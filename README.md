@@ -7,7 +7,7 @@ This is still in work at progress and very unstable
 
 - [ ] Notification <br>
 - [ ] Bluetooth UI <br>
-- [ ] Audio control <br>
+- [x] Audio control <br>
 - [ ] WiFi UI <br>
 - [ ] VPN UI <br>
 - [ ] Powermenu <br>
