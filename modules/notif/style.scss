@@ -1,0 +1,35 @@
+@use "../../colors" as c;
+
+$space: 1rem;
+
+.notif-main {
+  margin: $space 0 0 $space;
+}
+
+.notif-box {
+  background: linear-gradient(65deg, c.$ui-con 60%, darken(c.$ui-con, 5%));
+  padding: $space;
+  border-radius: $space*2;
+  margin-bottom: 1rem;
+
+  picture {
+    margin-top: $space;
+    border: 2px solid c.$ui-aa;
+    border-radius: $space;
+  }
+}
+
+.notif-box box .title {
+  padding-left: $space;
+  font-family: 'Storopia';
+
+  & .name {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: c.$ui-ab;
+  }
+
+  & .body {
+    color: c.$ui-aa;
+  }
+}
