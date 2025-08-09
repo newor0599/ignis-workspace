@@ -27,21 +27,23 @@ def NOTIF_POPUP(notif):
     )
     icon = Widget.Icon(
         image=icon_path,
-        pixel_size=40,
+        pixel_size=50,
+        valign="start",
+        vexpand=True,
     )
     group = [
         Widget.Box(
             child=[icon, text],
         )
     ]
-    preview_size = 15
+    preview_size = 6
     if notif.summary == "screenshot":
         ss_preview = Widget.Picture(
             image=notif.icon,
             width=16 * preview_size,
             height=9 * preview_size,
             content_fit="cover",
-            halign="center",
+            halign="end",
         )
         group.append(ss_preview)
 
@@ -49,13 +51,12 @@ def NOTIF_POPUP(notif):
         child=group,
         css_classes=["notif-box"],
         visible=True,
-        vertical=True,
     )
     rev = Widget.Revealer(
         transition_type="slide_down",
         child=group,
         css_classes=["notif-rev"],
-        transition_duration=400,
+        transition_duration=350,
         halign="start",
     )
     return rev
