@@ -45,11 +45,11 @@ class BAR:
         )
 
         # Audio
-        self.speakers = {}
+        self.sinks = {}
         self.sources = {}
-        self.audio.connect("notify::speakers", lambda x, y: self.update_speakers())
+        self.audio.connect("notify::speakers", lambda x, y: self.update_sinks())
         self.audio.connect("notify::microphones", lambda x, y: self.update_sources())
-        self.speaker_list = Variable(value=[])
+        self.sink_list = Variable(value=[])
         self.source_list = Variable(value=[])
         self.source_icon = Variable(value="")
         self.audio.microphone.connect(
@@ -113,16 +113,16 @@ class BAR:
                 visible = True
         self.visible["menus"].value = visible
 
-    def update_speakers(self):
-        speakers = self.audio.speakers
+    def update_sinks(self):
+        sinks = self.audio.speakers
         default = self.audio.speaker.description
-        speaker_list = []
-        for i in speakers:
-            self.speakers[i.description] = i
-            speaker_list.append(i.description)
-        speaker_list.remove(default)
-        speaker_list = [default] + speaker_list
-        self.speaker_list.value = speaker_list
+        sink_list = []
+        for i in sinks:
+            self.sinks[i.description] = i
+            sink_list.append(i.description)
+        sink_list.remove(default)
+        sink_list = [default] + sink_list
+        self.sink_list.value = sink_list
 
     def update_sources(self):
         sources = self.audio.microphones

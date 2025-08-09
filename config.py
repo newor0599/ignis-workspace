@@ -3,6 +3,7 @@ from modules.popup.ui import main as popup
 from modules.watermark.ui import main as watermark
 from modules.notif.ui import main as notif
 from scripts import colors
+from scripts import system_notifications
 from ignis.app import IgnisApp
 from os import path
 
@@ -17,3 +18,4 @@ app = IgnisApp.get_default()
 home_path = path.expanduser("~")
 colors.ColorManager().update_color(0)
 app.apply_css(f"{home_path}/.config/ignis/style.scss")
+system_notifications.SYSTEM_NOTIF()

@@ -5,36 +5,41 @@ from . import hitboxes
 from . import logic
 
 
-class BAR(menus.BAR, hitboxes.BAR, chips.BAR, logic.BAR):
+class BAR(logic.BAR):
     def tray(self):
-        chips = Widget.Box(
+        chip_list = Widget.Box(
             child=[
-                self.ClockChip(),
-                self.DateChip(),
-                self.BatteryChip(),
-                self.MixerChip(),
+                chips.ClockChip(self),
+                chips.DateChip(self),
+                chips.BatteryChip(self),
+                chips.MixerChip(self),
             ],
-            # halign="end",
             vexpand=True,
             css_classes=["chip-main"],
             vertical=True,
         )
-        menus = Widget.Revealer(
-            child=Widget.Box(
-                child=[
-                    self.DateMenu(),
-                    self.BatteryMenu(),
-                    self.MixerMenu(),
-                ],
+        menu_list = Widget.Revealer(
+            child=Widget.Scroll(
+                child=Widget.Box(
+                    child=[
+                        menus.DateMenu(self),
+                        menus.BatteryMenu(self),
+                        menus.MixerMenu(self),
+                    ],
+                    vertical=True,
+                    hexpand=True,
+                ),
                 css_classes=["menu-main"],
-                vertical=True,
+                vexpand=True,
+                hexpand=True,
+                style="min-width:20rem;",
             ),
             reveal_child=self.visible["menus"].bind("value"),
             css_classes=["menu-revealer"],
             transition_type="slide_left",
         )
         main_tray = Widget.Box(
-            child=[menus, chips],
+            child=[menu_list, chip_list],
             css_classes=["tray-main"],
         )
         revealer = Widget.Revealer(
@@ -59,5 +64,5 @@ class BAR(menus.BAR, hitboxes.BAR, chips.BAR, logic.BAR):
 def main():
     bar = BAR()
     bar.tray()
-    bar.tray_close_hitbox()
-    bar.tray_open_hitbox()
+    hitboxes.tray_close_hitbox(bar)
+    hitboxes.tray_open_hitbox(bar)
