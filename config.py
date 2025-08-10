@@ -8,7 +8,7 @@ from ignis.app import IgnisApp
 from os import path
 
 
-activation_watermark = False
+activation_watermark = 0
 tray()
 popup()
 notif()
