@@ -1,5 +1,5 @@
 @use "../../colors.scss" as c;
-$bar-dist: .7rem;
+$space: .7rem;
 $chip-size: 3rem;
 
 window {
@@ -22,7 +22,7 @@ window {
   color: c.$ui-con;
   font-size: 1.5rem;
   font-family: "Space Mono";
-  margin-bottom: $bar-dist;
+  margin-bottom: $space;
 }
 
 tooltip {
@@ -47,13 +47,13 @@ tooltip {
 .tray-main {
   background: c.$ui-con;
   /* background: linear-gradient(30deg, c.$ui-ab 10%, c.$ui-con 40%, c.$ui-con 100%); */
-  padding: $bar-dist;
+  padding: $space;
   margin: 1rem;
   border-radius: 2.1rem;
 }
 
 .menu-main {
-  margin-right: $bar-dist;
+  margin-right: $space;
   border-radius: 1rem;
   border: none;
 }
@@ -66,27 +66,27 @@ revealer.tray-menu {
     padding: .4rem;
     font-size: 1.5rem;
     font-weight: 700;
-    border-radius: calc(1rem + $bar-dist);
+    border-radius: calc(1rem + $space);
     font-family: "Lettera Mono LL Cond Light";
-    margin-bottom: $bar-dist;
+    margin-bottom: $space;
     background: linear-gradient(30deg, c.$ui-ab, c.$ui-aa 60%);
   }
 
   & box {
-    padding-bottom: $bar-dist;
+    padding-bottom: $space;
   }
 
   & box .box,
   calendar {
     background: c.$ui-ab;
-    border-radius: calc($bar-dist + 1rem);
-    padding: $bar-dist;
-    margin-bottom: $bar-dist;
+    border-radius: calc($space + 1rem);
+    padding: $space;
+    margin-bottom: $space;
     color: c.$ui-con;
 
     & .icon {
       font-size: 2rem;
-      margin-right: calc($bar-dist * 2);
+      margin-right: calc($space * 2);
       color: c.$ui-con;
     }
   }
@@ -101,11 +101,11 @@ revealer.tray-menu {
 }
 
 .app-mixer {
-  margin-right: $bar-dist;
+  margin-right: $space;
 }
 
 .app-mixer scale {
-  margin-bottom: $bar-dist;
+  margin-bottom: $space;
   transform: rotate(180deg);
 }
 
@@ -116,5 +116,29 @@ revealer.tray-menu {
 }
 
 .batt box scale {
-  margin-right: $bar-dist;
+  margin-right: $space;
+}
+
+button {
+  all: unset;
+  background: c.$ui-aa;
+  padding: $space/2;
+  margin-right: $space/2;
+  border-radius: 10rem;
+  font-size: 1rem;
+}
+
+.wifi-ap {
+  background: c.$ui-ab;
+  margin-bottom: $space;
+  padding: $space;
+  border-radius: $space*2;
+}
+
+entry {
+  all: unset;
+  background: c.$ui-aa;
+  padding: $space/2 $space $space/2 $space;
+  border-radius: 10rem;
+  color: c.$ui-con;
 }

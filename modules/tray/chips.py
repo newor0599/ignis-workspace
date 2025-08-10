@@ -37,7 +37,7 @@ def BatteryChip(self):
                     label=self.battery_icon,
                 ),
                 Widget.Label(
-                    label=self.laptop_batt.bind("percent", lambda x: str(int(x)) + "%")
+                    label=self.laptop_batt.bind("percent", lambda x: str(int(x)))
                 ),
             ],
             vertical=True,
@@ -108,4 +108,36 @@ def MixerChip(self):
             ),
             self.menu_visibility(),
         ),
+    )
+
+
+def NetChip(self):
+    return Widget.Button(
+        child=Widget.Box(
+            child=[
+                Widget.Label(
+                    label=self.network_icon.bind("value"),
+                ),
+                Widget.Label(
+                    label=self.wifi_device.ap.bind("strength", lambda x: str(x))
+                ),
+            ],
+            vertical=True,
+            valign="center",
+        ),
+        css_classes=["tray", "chip", "network"],
+        on_click=lambda x: (
+            setattr(
+                self.visible["net_menu"],
+                "value",
+                not self.visible["net_menu"].value,
+            ),
+            self.menu_visibility(),
+        ),
+        # tooltip_text=self.laptop_batt.bind_many(
+        #     ["energy_rate", "percent", "time_remaining"],
+        #     lambda x,
+        #     y,
+        #     z: f"{round(y)}%\n{round(x, 2)}w\n{self.calc_batt_life().replace(' hour', 'h').replace(' min', 'm').replace(' left', '')}",
+        # ),
     )

@@ -2,7 +2,7 @@ from ignis.variable import Variable
 from ignis.utils import Utils
 from ignis.services.upower import UPowerService
 from ignis.services.audio import AudioService
-
+from ignis.services.network import NetworkService
 from ignis.services.applications import ApplicationsService
 import datetime
 
@@ -18,6 +18,7 @@ class BAR:
             "date_menu": Variable(value=False),
             "batt_menu": Variable(value=False),
             "mixer_menu": Variable(value=False),
+            "net_menu": Variable(value=False),
         }
         self.menus = [i for i in self.visible.keys() if "menu" in i[-4:]]
 
@@ -50,12 +51,33 @@ class BAR:
         self.audio.connect("notify::speakers", lambda x, y: self.update_sinks())
         self.audio.connect("notify::microphones", lambda x, y: self.update_sources())
         self.sink_list = Variable(value=[])
+        self.sink_icon = Variable(value="")
         self.source_list = Variable(value=[])
         self.source_icon = Variable(value="")
+        self.sink = {
+            "dropdown_list": Variable(value=[]),
+            "icon": Variable(value=""),
+            "reference": {},
+        }
         self.audio.microphone.connect(
             "notify::is-muted", lambda x, y: self.get_source_icon()
         )
+        self.audio.speaker.connect(
+            "notify::is-muted", lambda x, y: self.get_sink_icon()
+        )
         self.apps_mixer = []
+
+        # WiFi
+        self.wifi_strength = Variable(value=0)
+        self.network_icon = Variable(value="")
+        self.wifi_device.ap.connect(
+            "notify::strength",
+            lambda x, y: setattr(
+                self.network_icon,
+                "value",
+                self.get_network_icon(x) if self.network.wifi.is_connected else "󰤮 ",
+            ),
+        )
 
     def calc_batt_life(self) -> str:
         life = self.laptop_batt.time_remaining / 60
@@ -76,6 +98,8 @@ class BAR:
         self.laptop_batt = self.upower.display_device
         self.audio = AudioService.get_default()
         self.applications = ApplicationsService.get_default()
+        self.network = NetworkService.get_default()
+        self.wifi_device = self.network.wifi.devices[0]
 
     def get_app_icon(self, app_name: str):
         apps = self.applications.apps
@@ -95,6 +119,13 @@ class BAR:
             return "󰂎"
         batt_level_code = 0x000F007A
         return chr(batt_level_code + percent - 1)
+
+    def get_network_icon(self, ap) -> str:
+        no_internet_icon = "󰤮"
+        connected_icons = "󰤯", "󰤟", "󰤢", "󰤥", "󰤨"
+        security_icons = "󰤬", "󰤡", "󰤤", "󰤧", "󰤪"
+        warning_icons = "󰤫", "󰤠", "󰤣", "󰤦", "󰤩"
+        return connected_icons[ap.strength // 21] + " "
 
     def get_time(self):
         now = datetime.datetime.now()
@@ -138,5 +169,11 @@ class BAR:
     def get_source_icon(self):
         if self.audio.microphone.is_muted:
             self.source_icon.value = "󰍭"
-            return
-        self.source_icon.value = ""
+        else:
+            self.source_icon.value = ""
+
+    def get_sink_icon(self):
+        if self.audio.speaker.is_muted:
+            self.sink_icon.value = "󰓄"
+        else:
+            self.sink_icon.value = "󰓃"

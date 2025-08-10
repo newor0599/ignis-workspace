@@ -13,6 +13,7 @@ class BAR(logic.BAR):
                 chips.DateChip(self),
                 chips.BatteryChip(self),
                 chips.MixerChip(self),
+                chips.NetChip(self),
             ],
             vexpand=True,
             css_classes=["chip-main"],
@@ -22,9 +23,10 @@ class BAR(logic.BAR):
             child=Widget.Scroll(
                 child=Widget.Box(
                     child=[
-                        menus.DateMenu(self),
-                        menus.BatteryMenu(self),
-                        menus.MixerMenu(self),
+                        menus.DateMenu(self).main(),
+                        menus.BatteryMenu(self).main(),
+                        menus.MixerMenu(self).main(),
+                        menus.NetworkMenu(self).main(),
                     ],
                     vertical=True,
                     hexpand=True,
@@ -58,6 +60,7 @@ class BAR(logic.BAR):
                 "top",
                 "bottom",
             ],
+            kb_mode="on_demand",
         )
 
 

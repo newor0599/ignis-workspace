@@ -1,177 +1,122 @@
 from ignis.services.audio import Stream
 from ignis.widgets import Widget
+from ignis.variable import Variable
+from asyncio import create_task
 
 
-def DateMenu(self):
-    title = Widget.Label(
-        label="Date",
-        css_classes=["title"],
-    )
-    cal = Widget.Calendar()
-    revealer = Widget.Revealer(
-        child=Widget.Box(
-            child=[title, cal],
-            css_classes=["date"],
-            vexpand=False,
-            vertical=True,
-        ),
-        reveal_child=self.visible["date_menu"].bind("value"),
-        transition_type="slide_down",
-        vexpand=False,
-        valign="start",
-        css_classes=["tray-menu", "date"],
-    )
-    return revealer
+class DateMenu:
+    def __init__(self, logic):
+        self.logic = logic
 
-
-def BatteryMenu(self):
-    title = Widget.Label(
-        label="Battery",
-        css_classes=["title"],
-    )
-    percentage = Widget.Box(
-        child=[
-            Widget.Label(
-                label=self.battery_icon,
-                css_classes=["icon"],
-            ),
-            Widget.Scale(
-                value=self.laptop_batt.bind("percent"),
-                css_classes=["scale"],
-                hexpand=True,
-                sensitive=False,
-            ),
-            Widget.Label(
-                label=self.laptop_batt.bind("percent", lambda x: f"{str(int(x))}%"),
-                css_classes=["percent"],
-            ),
-        ],
-        css_classes=["box"],
-    )
-    time = Widget.Box(
-        child=[
-            Widget.Label(label=" ", css_classes=["icon"]),
-            Widget.Label(label=self.battery_life.bind("value")),
-        ],
-        css_classes=["box"],
-    )
-    power = Widget.Box(
-        child=[
-            Widget.Label(label="󱐋 ", css_classes=["icon"]),
-            Widget.Label(
-                label=self.laptop_batt.bind(
-                    "energy-rate", lambda x: str(round(x, 2)) + "w"
-                )
-            ),
-        ],
-        css_classes=["box"],
-    )
-    revealer = Widget.Revealer(
-        child=Widget.Box(
-            child=[title, percentage, time, power],
-            vertical=True,
-            css_classes=["batt"],
-        ),
-        reveal_child=self.visible["batt_menu"].bind("value"),
-        css_classes=["tray-menu", "batt"],
-    )
-    return revealer
-
-
-def AppMixer(self, stream: Stream):
-    return Widget.Box(
-        vertical=True,
-        vexpand=True,
-        css_classes=["app-mixer"],
-        tooltip_text=f"{stream.name}\n{stream.description}",
-        child=[
-            Widget.Scale(
+    def main(self):
+        title = Widget.Label(
+            label="Date",
+            css_classes=["title"],
+        )
+        cal = Widget.Calendar()
+        revealer = Widget.Revealer(
+            child=Widget.Box(
+                child=[title, cal],
+                css_classes=["date"],
+                vexpand=False,
                 vertical=True,
-                max=1,
-                step=0.05,
-                value=stream.bind("volume", lambda x: x / 100),
-                on_change=lambda x: setattr(stream, "volume", x.value * 100),
-                vexpand=True,
             ),
-            Widget.Icon(
-                image=self.get_app_icon(stream.name),
-                pixel_size=20,
-            ),
-        ],
-    )
+            reveal_child=self.logic.visible["date_menu"].bind("value"),
+            transition_type="slide_down",
+            vexpand=False,
+            valign="start",
+            css_classes=["tray-menu", "date"],
+        )
+        return revealer
 
 
-def MixerMenu(self):
-    title = Widget.Label(label="Mixer", css_classes=["title"])
-    speaker_list = Widget.DropDown(
-        items=self.sink_list.bind("value"),
-        on_selected=lambda x, y: setattr(self.audio, "speaker", self.sinks[y]),
-    )
-    mic_list = Widget.DropDown(
-        items=self.source_list.bind("value"),
-        on_selected=lambda x, y: setattr(self.audio, "microphone", self.sources[y]),
-    )
-    speaker_scale = Widget.Box(
-        child=[
-            Widget.Label(label="󰓃", css_classes=["icon"]),
-            Widget.Scale(
-                max=1,
-                step=0.05,
-                value=self.audio.speaker.bind(
-                    "volume",
-                    lambda x: x / 100,
+class BatteryMenu:
+    def __init__(self, logic):
+        self.logic = logic
+
+    def main(self):
+        title = Widget.Label(
+            label="Battery",
+            css_classes=["title"],
+        )
+        percentage = Widget.Box(
+            child=[
+                Widget.Label(
+                    label=self.logic.battery_icon,
+                    css_classes=["icon"],
                 ),
-                on_change=lambda x: setattr(
-                    self.audio.speaker, "volume", x.value * 100
+                Widget.Scale(
+                    value=self.logic.laptop_batt.bind("percent"),
+                    css_classes=["scale"],
+                    hexpand=True,
+                    sensitive=False,
                 ),
-                hexpand=True,
-            ),
-        ],
-    )
-
-    default_speaker = Widget.Box(
-        child=[
-            speaker_scale,
-            speaker_list,
-        ],
-        vertical=True,
-        css_classes=["box"],
-    )
-
-    default_mic = Widget.Box(
-        child=[
-            Widget.Box(
-                child=[
-                    Widget.Label(
-                        label=self.source_icon.bind("value"),
-                        css_classes=["icon"],
+                Widget.Label(
+                    label=self.logic.laptop_batt.bind(
+                        "percent", lambda x: f"{str(int(x))}%"
                     ),
-                    Widget.Scale(
-                        max=1,
-                        step=0.05,
-                        value=self.audio.microphone.bind(
-                            "volume",
-                            lambda x: x / 100,
-                        ),
-                        on_change=lambda x: setattr(
-                            self.audio.microphone, "volume", x.value * 100
-                        ),
-                        hexpand=True,
-                    ),
-                ],
+                    css_classes=["percent"],
+                ),
+            ],
+            css_classes=["box"],
+        )
+        time = Widget.Box(
+            child=[
+                Widget.Label(label=" ", css_classes=["icon"]),
+                Widget.Label(label=self.logic.battery_life.bind("value")),
+            ],
+            css_classes=["box"],
+        )
+        power = Widget.Box(
+            child=[
+                Widget.Label(label="󱐋 ", css_classes=["icon"]),
+                Widget.Label(
+                    label=self.logic.laptop_batt.bind(
+                        "energy-rate", lambda x: str(round(x, 2)) + "w"
+                    )
+                ),
+            ],
+            css_classes=["box"],
+        )
+        revealer = Widget.Revealer(
+            child=Widget.Box(
+                child=[title, percentage, time, power],
+                vertical=True,
+                css_classes=["batt"],
             ),
-            mic_list,
-        ],
-        vertical=True,
-        css_classes=["box"],
-    )
+            reveal_child=self.logic.visible["batt_menu"].bind("value"),
+            css_classes=["tray-menu", "batt"],
+        )
+        return revealer
 
-    apps_control = Widget.Box(
-        css_classes=["apps-mixer", "box"],
-        child=[Widget.Scroll(hexpand=True)],
-    )
 
-    def apps_list(apps):
+class MixerMenu:
+    def __init__(self, logic):
+        self.logic = logic
+
+    def AppMixer(self, stream: Stream):
+        return Widget.Box(
+            vertical=True,
+            vexpand=True,
+            css_classes=["app-mixer"],
+            tooltip_text=f"{stream.name}\n{stream.description}",
+            child=[
+                Widget.Scale(
+                    vertical=True,
+                    max=1,
+                    step=0.05,
+                    value=stream.bind("volume", lambda x: x / 100),
+                    on_change=lambda x: setattr(stream, "volume", x.value * 100),
+                    vexpand=True,
+                ),
+                Widget.Icon(
+                    image=self.logic.get_app_icon(stream.name),
+                    pixel_size=20,
+                ),
+            ],
+        )
+
+    def get_app_list(self, apps):
         if len(apps) <= 0:
             return [
                 Widget.Label(
@@ -179,36 +124,229 @@ def MixerMenu(self):
                     valign="start",
                 )
             ]
-        return [AppMixer(self, i) for i in apps]
+        return [self.AppMixer(i) for i in apps]
 
-    setattr(
-        apps_control.child[0],
-        "child",
-        Widget.Box(child=apps_list(self.audio.apps)),
-    )
+    def audio_scale(self, audio: Stream, icon: Variable):
+        return Widget.Box(
+            child=[
+                Widget.Label(label=icon.bind("value"), css_classes=["icon"]),
+                Widget.Scale(
+                    max=100,
+                    step=5,
+                    value=audio.bind(
+                        "volume",
+                        lambda x: x,
+                    ),
+                    on_change=lambda x: setattr(audio, "volume", x.value),
+                    hexpand=True,
+                ),
+            ],
+        )
 
-    self.audio.connect(
-        "notify::apps",
-        lambda x, y: setattr(
+    def main(self):
+        title = Widget.Label(label="Mixer", css_classes=["title"])
+        speaker_list = Widget.DropDown(
+            items=self.logic.sink_list.bind("value"),
+            on_selected=lambda x, y: setattr(
+                self.logic.audio, "speaker", self.logic.sinks[y]
+            ),
+        )
+        mic_list = Widget.DropDown(
+            items=self.logic.source_list.bind("value"),
+            on_selected=lambda x, y: setattr(
+                self.logic.audio, "microphone", self.logic.sources[y]
+            ),
+        )
+        speaker_scale = self.audio_scale(self.logic.audio.speaker, self.logic.sink_icon)
+        mic_scale = self.audio_scale(
+            self.logic.audio.microphone, self.logic.source_icon
+        )
+        default_speaker = Widget.Box(
+            child=[
+                speaker_scale,
+                speaker_list,
+            ],
+            vertical=True,
+            css_classes=["box"],
+        )
+
+        default_mic = Widget.Box(
+            child=[
+                mic_scale,
+                mic_list,
+            ],
+            vertical=True,
+            css_classes=["box"],
+        )
+
+        apps_control = Widget.Box(
+            css_classes=["apps-mixer", "box"],
+            child=[Widget.Scroll(hexpand=True)],
+        )
+
+        setattr(
             apps_control.child[0],
             "child",
-            Widget.Box(child=apps_list(x.apps)),
-        ),
-    )
+            Widget.Box(child=self.get_app_list(self.logic.audio.apps)),
+        )
 
-    grouper = Widget.Box(
-        child=[
-            title,
-            default_speaker,
-            default_mic,
-            apps_control,
-        ],
-        vertical=True,
-    )
-    revealer = Widget.Revealer(
-        child=grouper,
-        reveal_child=self.visible["mixer_menu"].bind("value"),
-        transition_type="slide_down",
-        css_classes=["tray-menu", "mixer"],
-    )
-    return revealer
+        self.logic.audio.connect(
+            "notify::apps",
+            lambda x, y: setattr(
+                apps_control.child[0],
+                "child",
+                Widget.Box(child=self.get_app_list(x.apps)),
+            ),
+        )
+
+        grouper = Widget.Box(
+            child=[
+                title,
+                default_speaker,
+                default_mic,
+                apps_control,
+            ],
+            vertical=True,
+        )
+        revealer = Widget.Revealer(
+            child=grouper,
+            reveal_child=self.logic.visible["mixer_menu"].bind("value"),
+            transition_type="slide_down",
+            css_classes=["tray-menu", "mixer"],
+        )
+        return revealer
+
+
+class WifiPoint:
+    def __init__(self, wifi_ap):
+        self.ap = wifi_ap
+        self.expand = {
+            "entry": Variable(value=False),
+            "action": Variable(value=False),
+        }
+
+
+class NetworkMenu:
+    def __init__(self, logic):
+        self.logic = logic
+
+    def WifiPoint(self, wifi_ap):
+        # Widgets
+        expand = Variable(
+            value={
+                "entry": False,
+                "action": False,
+            }
+        )
+        connection_label = Variable(value="Disconnect")
+        connection_on_click = Variable()
+        entry = Widget.Revealer(
+            child=Widget.Entry(
+                visibility=False,
+                placeholder_text="Enter password",
+                on_accept=lambda x: create_task(wifi_ap.connect_to(x.text)),
+            ),
+            reveal_child=expand.bind("value", lambda x: x["entry"]),
+        )
+        ssid = Widget.Label(
+            label=wifi_ap.ssid,
+            valign="center",
+            vexpand=True,
+        )
+        arrow = Widget.Arrow(
+            pixel_size=20,
+            rotated=expand.bind("value", lambda x: x["entry"] or x["action"]),
+            degree=90,
+            valign="center",
+            vexpand=True,
+        )
+        connection = Widget.Button(
+            label=connection_label.bind("value"),
+            on_click=connection_on_click.bind("value"),
+        )
+        header = Widget.EventBox(
+            child=[
+                ssid,
+                arrow,
+            ],
+            on_click=lambda x: (
+                expand.value.update({"action": not expand.value["action"]})
+                if wifi_ap.is_connected
+                else expand.value.update({"entry": not expand.value["entry"]}),
+                setattr(expand, "value", expand.value),
+            ),
+        )
+        actions = Widget.Revealer(
+            child=Widget.Box(
+                child=[
+                    connection,
+                ],
+            ),
+            reveal_child=expand.bind("value", lambda x: x["action"]),
+        )
+
+        # Logic
+        wifi_ap.connect(
+            "notify::is_connected",
+            lambda x, y: (
+                setattr(
+                    connection_label,
+                    "value",
+                    "Disconnect" if x.is_connected else "Connect",
+                ),
+                setattr(
+                    connection_on_click,
+                    "value",
+                    lambda x: create_task(wifi_ap.disconnect_from())
+                    if x.is_connected
+                    else lambda x: create_task(wifi_ap.connect_to()),
+                ),
+                expand.value.update({"entry": False}) if wifi_ap.is_connected else None,
+                setattr(expand, "value", expand.value),
+            ),
+        )
+
+        return Widget.Box(
+            child=[header, entry, actions],
+            vertical=True,
+            css_classes=["wifi-ap"],
+        )
+
+    def update_wifi(self):
+        wifi_list = []
+        for i in self.logic.wifi_device.access_points:
+            if i.ssid is not None:
+                wifi_list.append(self.WifiPoint(i))
+        return wifi_list
+
+    def main(self):
+        wifi_list = Variable(value=[])
+        self.logic.wifi_device.connect(
+            "new_access_point",
+            lambda x, y: setattr(wifi_list, "value", self.update_wifi()),
+        )
+        setattr(wifi_list, "value", self.update_wifi())
+        title = Widget.Label(
+            label="Network",
+            css_classes=["title"],
+            hexpand=True,
+        )
+        revealer = Widget.Revealer(
+            child=Widget.Box(
+                child=[
+                    title,
+                    Widget.Scroll(
+                        child=Widget.Box(child=wifi_list.bind("value"), vertical=True),
+                        style="min-height:20rem;",
+                    ),
+                    Widget.Button(
+                        label="Scan",
+                        on_click=lambda x: create_task(self.logic.wifi_device.scan()),
+                    ),
+                ],
+                vertical=True,
+            ),
+            css_classes=["tray-menu"],
+            reveal_child=self.logic.visible["net_menu"].bind("value"),
+        )
+        return revealer
