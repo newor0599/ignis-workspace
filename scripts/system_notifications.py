@@ -9,6 +9,7 @@ class SYSTEM_NOTIF:
         self.laptop_battery = self.upower.display_device
         self.low_battery_notified = False
         self.charging_notified = False
+        self.charged_notified = False
         self.laptop_battery.connect(
             "notify::percent", lambda x, y: self.low_battery_notify()
         )
@@ -26,6 +27,11 @@ class SYSTEM_NOTIF:
         )
 
     def low_battery_notify(self):
+        if self.laptop_battery.percent >= 90 and not self.charged_notified:
+            self.notify("Battery is fully charged!")
+            self.charged_notified = True
+            return
+        self.charged_notified = False
         if self.laptop_battery.charging:
             return
         if self.laptop_battery.percent <= 5:
