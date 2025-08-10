@@ -5,17 +5,15 @@ from os.path import expanduser
 
 
 def NOTIF_POPUP(notif):
-    icon_path = notif.icon
-    app_name = notif.app_name
     if notif.app_name == "System":
         icon_path = expanduser("~/.systemui/assets/icons/system.png")
-    if notif.app_name == "":
-        app_name = notif.summary
+    else:
+        icon_path = notif.icon
     text = Widget.Box(
         vertical=True,
         child=[
             Widget.Label(
-                label=app_name,
+                label=notif.app_name,
                 halign="start",
                 css_classes=["name"],
             ),
