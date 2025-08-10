@@ -7,10 +7,7 @@ window {
 .watermark {
   color: #ddd;
   font-size: 1.5rem;
-
-  & label {
-    opacity: .6;
-  }
+  opacity: .6;
 
   &.mini {
     font-size: .9rem;
