@@ -8,7 +8,7 @@ This is working in progress and very unstable
 - [x] Notification <br>
 - [ ] Bluetooth UI <br>
 - [x] Audio control <br>
-- [ ] WiFi UI <br>
+- [x] WiFi UI <br>
 - [ ] VPN UI <br>
 - [ ] Powermenu <br>
 - [x] Popup for audio and display brightness <br>
@@ -17,4 +17,4 @@ This is working in progress and very unstable
 ## Dependencies
 <br>
 
-- hellwal (color generator)
+- [hellwal](https://github.com/danihek/hellwal) (color generator)
