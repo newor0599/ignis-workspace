@@ -14,6 +14,7 @@ class BAR(logic.BAR):
                 chips.BatteryChip(self),
                 chips.MixerChip(self),
                 chips.NetChip(self),
+                chips.BluetoothChip(self),
             ],
             vexpand=True,
             css_classes=["chip-main"],
@@ -27,6 +28,7 @@ class BAR(logic.BAR):
                         menus.BatteryMenu(self).main(),
                         menus.MixerMenu(self).main(),
                         menus.NetworkMenu(self).main(),
+                        menus.BluetoothMenu(self).main(),
                     ],
                     vertical=True,
                     hexpand=True,
@@ -60,7 +62,7 @@ class BAR(logic.BAR):
                 "top",
                 "bottom",
             ],
-            kb_mode="on_demand",
+            # kb_mode="on_demand",
         )
 
 

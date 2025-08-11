@@ -1,4 +1,6 @@
 from ignis.services.audio import Stream
+from ignis.services.bluetooth import BluetoothDevice
+from ignis.utils import Utils
 from ignis.widgets import Widget
 from ignis.variable import Variable
 from asyncio import create_task
@@ -217,15 +219,6 @@ class MixerMenu:
         return revealer
 
 
-class WifiPoint:
-    def __init__(self, wifi_ap):
-        self.ap = wifi_ap
-        self.expand = {
-            "entry": Variable(value=False),
-            "action": Variable(value=False),
-        }
-
-
 class NetworkMenu:
     def __init__(self, logic):
         self.logic = logic
@@ -348,5 +341,85 @@ class NetworkMenu:
             ),
             css_classes=["tray-menu"],
             reveal_child=self.logic.visible["net_menu"].bind("value"),
+        )
+        return revealer
+
+
+class BluetoothMenu:
+    def __init__(self, logic):
+        self.logic = logic
+
+    def get_icon(self, device: BluetoothDevice):
+        if device.connected:
+            return " "
+        if device.paired:
+            return ""
+        return " "
+
+    def get_action(self, device: BluetoothDevice):
+        if device.connected:
+            return lambda x: create_task(device.disconnect_from())
+        return lambda x: create_task(device.connect_to())
+
+    def device(self, device: BluetoothDevice):
+        icon = Variable(value="")
+        indicator = Widget.Label(
+            css_classes=["ind"],
+            label=icon.bind("value"),
+            halign="end",
+            hexpand=True,
+            valign="center",
+        )
+        main = Widget.EventBox(
+            child=[
+                Widget.Label(
+                    label=device.alias,
+                    halign="start",
+                ),
+                indicator,
+            ],
+            css_classes=["bt", "device"],
+            on_click=device.bind("connected", lambda x: self.get_action(device)),
+        )
+        icon.set_value(self.get_icon(device))
+        device.connect(
+            "notify::connected",
+            lambda x, y: (setattr(icon, "value", self.get_icon(x)),),
+        )
+        return main
+
+    def update_devices(self):
+        return [self.device(i) for i in self.logic.bt.devices]
+
+    def main(self):
+        device_list = Variable(value=[])
+        title = Widget.Label(
+            label="Bluetooth",
+            css_classes=["title"],
+            hexpand=True,
+        )
+        revealer = Widget.Revealer(
+            child=Widget.Box(
+                child=[
+                    title,
+                    Widget.Scroll(
+                        child=Widget.Box(
+                            child=device_list.bind("value"), vertical=True
+                        ),
+                        style="min-height:20rem;",
+                    ),
+                    Widget.Button(
+                        label="Scan",
+                        on_click=lambda x: setattr(self.logic.bt, "setup_mode", True),
+                    ),
+                ],
+                vertical=True,
+            ),
+            css_classes=["tray-menu"],
+            reveal_child=self.logic.visible["bluetooth_menu"].bind("value"),
+        )
+        self.logic.bt.connect(
+            "notify::devices",
+            lambda x, y: (setattr(device_list, "value", self.update_devices()),),
         )
         return revealer

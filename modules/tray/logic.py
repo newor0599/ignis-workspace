@@ -4,6 +4,7 @@ from ignis.services.upower import UPowerService
 from ignis.services.audio import AudioService
 from ignis.services.network import NetworkService
 from ignis.services.applications import ApplicationsService
+from ignis.services.bluetooth import BluetoothService
 import datetime
 
 
@@ -19,6 +20,7 @@ class BAR:
             "batt_menu": Variable(value=False),
             "mixer_menu": Variable(value=False),
             "net_menu": Variable(value=False),
+            "bluetooth_menu": Variable(value=False),
         }
         self.menus = [i for i in self.visible.keys() if "menu" in i[-4:]]
 
@@ -79,6 +81,23 @@ class BAR:
             ),
         )
 
+        # Bluetooth
+        self.bt_connected_length = Variable(value="0")
+        setattr(
+            self.bt_connected_length,
+            "value",
+            str(len(self.bt.connected_devices)),
+        )
+        self.bt.connect(
+            "notify::connected_devices",
+            lambda x, y: (
+                setattr(
+                    self.bt_connected_length, "value", str(len(x).connected_devices)
+                ),
+                print("Updated conencted devices length"),
+            ),
+        )
+
     def calc_batt_life(self) -> str:
         life = self.laptop_batt.time_remaining / 60
         string = ""
@@ -99,6 +118,7 @@ class BAR:
         self.audio = AudioService.get_default()
         self.applications = ApplicationsService.get_default()
         self.network = NetworkService.get_default()
+        self.bt = BluetoothService.get_default()
         self.wifi_device = self.network.wifi.devices[0]
 
     def get_app_icon(self, app_name: str):

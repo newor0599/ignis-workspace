@@ -134,10 +134,30 @@ def NetChip(self):
             ),
             self.menu_visibility(),
         ),
-        # tooltip_text=self.laptop_batt.bind_many(
-        #     ["energy_rate", "percent", "time_remaining"],
-        #     lambda x,
-        #     y,
-        #     z: f"{round(y)}%\n{round(x, 2)}w\n{self.calc_batt_life().replace(' hour', 'h').replace(' min', 'm').replace(' left', '')}",
-        # ),
+    )
+
+
+def BluetoothChip(self):
+    return Widget.Button(
+        child=Widget.Box(
+            child=[
+                Widget.Label(
+                    label="󰂯",
+                ),
+                Widget.Label(
+                    label=self.bt_connected_length.bind("value"),
+                ),
+            ],
+            vertical=True,
+            valign="center",
+        ),
+        css_classes=["tray", "chip", "bluetooth"],
+        on_click=lambda x: (
+            setattr(
+                self.visible["bluetooth_menu"],
+                "value",
+                not self.visible["bluetooth_menu"].value,
+            ),
+            self.menu_visibility(),
+        ),
     )
