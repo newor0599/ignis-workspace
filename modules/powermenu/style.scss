@@ -1,0 +1,36 @@
+@use "../../colors.scss" as c;
+$space: 1rem;
+
+.powermenu .button {
+  background: c.$ui-ab;
+  min-height: 13rem;
+  min-width: 13rem;
+  padding: 10px;
+  border-radius: $space;
+  transition: .3s ease;
+  color: c.$ui-con;
+
+  & .icon {
+    font-size: 10rem;
+  }
+
+  & .label {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  &:hover {
+    background: c.$ui-aa;
+  }
+}
+
+.powermenu {
+  background: c.$ui-con;
+  padding: $space;
+  border-radius: $space*2;
+  margin-top: $space;
+}
+
+.powermenu.hitbox {
+  background: #00000001;
+}
