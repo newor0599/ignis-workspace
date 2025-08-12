@@ -1,12 +1,12 @@
 # Ignis based workspace
-<img src="preview/v0.94.png">
+<img src="preview/v0.95.png">
 This is working in progress and very unstable
 
 ## V1 milestone
 <br>
 
 - [x] Notification <br>
-- [ ] Bluetooth UI <br>
+- [x] Bluetooth UI <br>
 - [x] Audio control <br>
 - [x] WiFi UI <br>
 - [ ] VPN UI <br>
