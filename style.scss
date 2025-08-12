@@ -102,10 +102,6 @@ dropdown button {
   padding: .5rem;
 }
 
-dropdown button label {
-  margin-bottom: -1.1rem;
-}
-
 dropdown button arrow {
   -gtk-icon-source: -gtk-icontheme("pan-down-symbolic");
   color: colors.$ui-con;
@@ -124,5 +120,7 @@ popover.menu {
 
 popover.menu contents {
   padding: .5rem;
-  margin-bottom: -1rem;
+  border: .4rem solid colors.$ui-con;
+  border-radius: 1rem;
+  margin-bottom: .2rem;
 }
