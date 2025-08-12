@@ -69,11 +69,8 @@ revealer.tray-menu {
     border-radius: calc(1rem + $space);
     font-family: "Lettera Mono LL Cond Light";
     margin-bottom: $space;
+    margin-top: $space;
     background: linear-gradient(30deg, c.$ui-ab, c.$ui-aa 60%);
-  }
-
-  & box {
-    padding-bottom: $space;
   }
 
   & box .box,
@@ -95,9 +92,6 @@ revealer.tray-menu {
 .box.apps-mixer {
   min-height: 12rem;
 
-  & box {
-    padding-bottom: 0;
-  }
 }
 
 .app-mixer {
@@ -107,6 +101,10 @@ revealer.tray-menu {
 .app-mixer scale {
   margin-bottom: $space;
   transform: rotate(180deg);
+}
+
+box.box.default scale {
+  margin-bottom: $space;
 }
 
 .app-mixer image {

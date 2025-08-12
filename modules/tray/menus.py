@@ -169,7 +169,7 @@ class MixerMenu:
                 speaker_list,
             ],
             vertical=True,
-            css_classes=["box"],
+            css_classes=["box", "default"],
         )
 
         default_mic = Widget.Box(
@@ -178,7 +178,7 @@ class MixerMenu:
                 mic_list,
             ],
             vertical=True,
-            css_classes=["box"],
+            css_classes=["box", "default"],
         )
 
         apps_control = Widget.Box(
