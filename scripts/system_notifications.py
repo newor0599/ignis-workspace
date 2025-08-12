@@ -67,7 +67,7 @@ class SYSTEM_NOTIF:
             self.notified["low bat"] = False
 
     def charging_notify(self):
-        if self.laptop_battery.charging and not self.notifed["charging"]:
+        if self.laptop_battery.charging and not self.notified["charging"]:
             self.notify("Battery is being charged!")
             self.notified["charging"] = True
             return
@@ -85,6 +85,6 @@ class SYSTEM_NOTIF:
 
         if (
             self.laptop_battery.percent < self.battery_state["max"]
-            or not self.laptop_battery.charging
+            and not self.laptop_battery.charging
         ):
             self.notified["charged"] = False

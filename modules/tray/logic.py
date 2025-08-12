@@ -92,9 +92,10 @@ class BAR:
             "notify::connected_devices",
             lambda x, y: (
                 setattr(
-                    self.bt_connected_length, "value", str(len(x).connected_devices)
+                    self.bt_connected_length,
+                    "value",
+                    str(len(self.bt.connected_devices)),
                 ),
-                print("Updated conencted devices length"),
             ),
         )
 
