@@ -1,116 +1,46 @@
-from subprocess import run
-from os.path import expanduser
-import json
-import colorsys
+from colorthief import ColorThief
+from os import path
 
 
 class ColorManager:
-    def __init__(self, color_id=3):
-        self.runable = True
-        self.wallpaper_path = self.get_wall_path()
-        if self.wallpaper_path.split(".")[-1] not in ("jpg", "jpeg", "png"):
-            self.runable = False
-            print("Invalid image type")
-            return None
-        dark_cmd = [
-            "bash",
-            "-c",
-            f"hellwal -i '{self.wallpaper_path}' -j --skip-term-colors",
-        ]
-        dark_bg_cmd = [
-            "bash",
-            "-c",
-            f"hellwal -i '{self.wallpaper_path}' -c -v -j --skip-term-colors",
-        ]
-        light_cmd = [
-            "bash",
-            "-c",
-            f"hellwal -i '{self.wallpaper_path}' -l -j --skip-term-colors",
-        ]
+    def __init__(self):
+        self.colors = []
 
-        dark_palette = run(
-            dark_cmd,
-            capture_output=True,
-            text=True,
-        ).stdout
+    def update(self, wallpaper_path: str = None, theme: int = 0):
+        colors = sorted(ColorThief(wallpaper_path).get_palette(2, 60))
+        if theme == 1:
+            colors[2], colors[1] = colors[1], colors[2]
 
-        dark_bg = run(
-            dark_bg_cmd,
-            capture_output=True,
-            text=True,
-        ).stdout
+        # Set ignis theme
+        with open(path.expanduser("~/.config/ignis/colors.scss"), "w") as f:
+            f.write(f"""$ui-aa:rgb{colors[2]};
+$ui-ab:rgb{colors[1]};
+$ui-con:rgb{colors[0]};""")
 
-        light_palette = run(
-            light_cmd,
-            capture_output=True,
-            text=True,
-        ).stdout
+        # Set hyprlock theme
+        with open(path.expanduser("~/.config/hypr/wallust.conf"), "w") as f:
+            f.write(f"""$uia=rgb{colors[2]}
+$uib=rgb{colors[1]}
+$uic=rgb{colors[0]}
+$wallpaper={wallpaper_path}""")
 
-        if len(dark_palette) <= 0:
-            print("Unable to generate dark theme", dark_palette)
-            self.runable = False
-            return
+        # Set mango theme
+        with open(path.expanduser("~/.config/mango/colors.conf"), "w") as f:
+            f.write(f"""focuscolor=0x{self.rgb2hex(colors[1])[1:]}ff
+bordercolor=0x{self.rgb2hex(colors[2])[1:]}ff""")
 
-        # Json to Dict
-        dark_palette = json.loads(dark_palette)
-        dark_bg = json.loads(dark_bg)
-        light_palette = json.loads(light_palette)
+        # Set wofi theme
+        with open(path.expanduser("~/.config/wofi/colors"), "w") as f:
+            f.write(f"""#{self.rgb2hex(colors[2])[1:]}
+#{self.rgb2hex(colors[1])[1:]}
+#{self.rgb2hex(colors[0])[1:]}
+#000000""")
 
-        # Contrast
-        clamped_a = self.clamp_color(
-            dark_palette["colors"][f"color{color_id}"],
-            min_clamp_value=0.65,
-        )
-        clamped_b = self.clamp_color(
-            dark_palette["colors"][f"color{color_id + 8}"],
-            0.5,
-        )
-
-        # Base palette
-        self.main_palette = {
-            "a": clamped_a,
-            "b": clamped_b,
-            "contrast_dark": dark_palette["special"]["background"],
-            "contrast_light": light_palette["special"]["background"],
-        }
-
-    def get_wall_path(self):
-        path = run(["swww", "query"], capture_output=True, text=True)
-        if path.stderr != "":
-            print("swww not installed!")
-            return
-        path = path.stdout
-        path = path[path.find("image: ") + 7 :].strip()
-        return path
-
-    def clamp_color(
-        self, hex_color: str, max_clamp_value: int = 1, min_clamp_value: int = 0
-    ):
-        hex_color = hex_color.lstrip("#")
-        r = int(hex_color[0:2], 16) / 255
-        g = int(hex_color[2:4], 16) / 255
-        b = int(hex_color[4:6], 16) / 255
-
-        h, l, s = colorsys.rgb_to_hls(r, g, b)  # noqa: E741
-        l = max(min_clamp_value, min(max_clamp_value, l))  # noqa: E741
-        r, g, b = colorsys.hls_to_rgb(h, l, s)
-        return "#{0:02x}{1:02x}{2:02x}".format(int(r * 255), int(g * 255), int(b * 255))
-
-    def update_color(self, theme: int = 0):
-        if not self.runable:
-            print("Invalid Image")
-            return
-        with open(expanduser("~/.config/ignis/colors.scss"), "w") as f:
-            generate = f"""
-$ui-aa: {self.main_palette["a"]};
-$ui-ab: {self.main_palette["b"]};
-$ui-shadow: rgba($ui-ab,0.5);
-"""
-            if theme:
-                generate += f"$ui-con: {self.main_palette['contrast_light']};"
-            else:
-                generate += f"$ui-con: {self.clamp_color(self.main_palette['a'], max_clamp_value=0.1)};"
-            f.write(generate)
+    def rgb2hex(self, rgb: list[int]):
+        r = max(0, min(255, rgb[0]))
+        g = max(0, min(255, rgb[1]))
+        b = max(0, min(255, rgb[2]))
+        return "${:02x}{:02x}{:02x}".format(r, g, b)
 
 
 if __name__ == "__main__":

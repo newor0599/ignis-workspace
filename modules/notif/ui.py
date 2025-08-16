@@ -21,6 +21,7 @@ def NOTIF_POPUP(notif):
                 label=notif.body,
                 halign="start",
                 css_classes=["body"],
+                ellipsize="end",
             ),
         ],
         css_classes=["title"],

@@ -2,6 +2,8 @@ from ignis.variable import Variable
 from ignis.services.audio import AudioService
 from ignis.services.backlight import BacklightService
 from ignis.utils import Utils
+from math import log
+from math import e
 
 
 class MAIN:
@@ -9,6 +11,7 @@ class MAIN:
         self.service_inits()
 
         # Backlight
+        self.brightness_multiplier = 9
         self.bl_state = {
             "name": "bl",
             "visible": Variable(value=False),
@@ -17,14 +20,14 @@ class MAIN:
             "change": lambda x: setattr(
                 self.backlight,
                 "brightness",
-                x.value * self.backlight.max_brightness,
+                log(1 + x.value * self.brightness_multiplier, e)
+                / log(1 + self.brightness_multiplier, e)
+                * self.backlight.max_brightness,
             ),
         }
         self.backlight.connect(
             "notify::brightness",
-            lambda x, y: self.brightness_change(
-                x.brightness / self.backlight.max_brightness
-            ),
+            lambda x, y: self.brightness_change(),
         )
 
         # Volume
@@ -70,11 +73,15 @@ class MAIN:
         self.vol_state["value"].value = volume
         self.vol_popup_debounce()
 
-    def brightness_change(self, brightness: int):
+    def brightness_change(self):
         icons = "󰃞 ", "󰃝 ", "󰃟 ", "󰃠 "
-        self.bl_state["icon"].value = icons[int(brightness * 10 // 3)]
+        self.bl_state["icon"].value = icons[
+            int(self.backlight.brightness / self.backlight.max_brightness * 10 // 3)
+        ]
         self.bl_state["visible"].value = True
-        self.bl_state["value"].value = brightness
+        self.bl_state["value"].value = (
+            self.backlight.brightness / self.backlight.max_brightness
+        )
         self.bl_popup_debounce()
 
     @Utils.debounce(1000)

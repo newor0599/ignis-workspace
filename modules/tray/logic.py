@@ -1,3 +1,4 @@
+from ignis.services.bluetooth.device import BluetoothDevice
 from ignis.variable import Variable
 from ignis.utils import Utils
 from ignis.services.upower import UPowerService
@@ -5,6 +6,7 @@ from ignis.services.audio import AudioService
 from ignis.services.network import NetworkService
 from ignis.services.applications import ApplicationsService
 from ignis.services.bluetooth import BluetoothService
+from asyncio import create_task
 import datetime
 
 
@@ -17,9 +19,9 @@ class BAR:
             "tray": Variable(value=False),
             "menus": Variable(value=False),
             "date_menu": Variable(value=False),
-            "batt_menu": Variable(value=False),
+            "battery_menu": Variable(value=False),
             "mixer_menu": Variable(value=False),
-            "net_menu": Variable(value=False),
+            "network_menu": Variable(value=False),
             "bluetooth_menu": Variable(value=False),
         }
         self.menus = [i for i in self.visible.keys() if "menu" in i[-4:]]
@@ -198,3 +200,15 @@ class BAR:
             self.sink_icon.value = "󰓄"
         else:
             self.sink_icon.value = "󰓃"
+
+    def get_bt_device_icon(self, device: BluetoothDevice):
+        if device.connected:
+            return " "
+        if device.paired:
+            return ""
+        return " "
+
+    def get_bt_device_action(self, device: BluetoothDevice):
+        if device.connected:
+            return lambda x: create_task(device.disconnect_from())
+        return lambda x: create_task(device.connect_to())

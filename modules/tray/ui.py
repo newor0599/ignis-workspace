@@ -15,6 +15,7 @@ class BAR(logic.BAR):
                 chips.MixerChip(self),
                 chips.NetChip(self),
                 chips.BluetoothChip(self),
+                chips.WallpaperChip(self),
             ],
             vexpand=True,
             css_classes=["chip-main"],
@@ -24,11 +25,11 @@ class BAR(logic.BAR):
             child=Widget.Scroll(
                 child=Widget.Box(
                     child=[
-                        menus.DateMenu(self).main(),
-                        menus.BatteryMenu(self).main(),
-                        menus.MixerMenu(self).main(),
-                        menus.NetworkMenu(self).main(),
-                        menus.BluetoothMenu(self).main(),
+                        menus.DateMenu(self).menu(),
+                        menus.BatteryMenu(self).menu(),
+                        menus.MixerMenu(self).menu(),
+                        menus.NetworkMenu(self).menu(),
+                        menus.BluetoothMenu(self).menu(),
                     ],
                     vertical=True,
                     hexpand=True,
@@ -53,7 +54,7 @@ class BAR(logic.BAR):
             transition_duration=300,
             css_classes=["tray-revealer"],
         )
-        Widget.Window(
+        return Widget.Window(
             layer="overlay",
             namespace="Tray IGNIS",
             child=revealer,
@@ -62,12 +63,12 @@ class BAR(logic.BAR):
                 "top",
                 "bottom",
             ],
-            # kb_mode="on_demand",
+            kb_mode="on_demand",
         )
 
 
 def main():
     bar = BAR()
-    bar.tray()
     hitboxes.tray_close_hitbox(bar)
     hitboxes.tray_open_hitbox(bar)
+    bar.tray()

@@ -22,4 +22,6 @@ def main():
             css_classes=["watermark", "box"],
         ),
         layer="overlay",
+        input_height=0,
+        input_width=0,
     )

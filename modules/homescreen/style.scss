@@ -1,0 +1,31 @@
+@use "../../colors.scss" as c;
+
+window {
+  background: #00000001;
+}
+
+.homescreen {
+  color: c.$ui-con;
+
+  &.box {
+    margin-bottom: 3rem;
+    background: linear-gradient(c.$ui-ab 10%, c.$ui-aa);
+    padding: 3rem;
+    border-radius: 15rem;
+  }
+
+  &.time {
+    all: unset;
+    font-size: 3rem;
+    letter-spacing: 4rem;
+    font-weight: 900;
+  }
+
+  &.day {
+    all: unset;
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    letter-spacing: 1rem;
+    font-family: 'Courier New', Courier, monospace;
+  }
+}

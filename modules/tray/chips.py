@@ -1,4 +1,7 @@
 from ignis.widgets import Widget
+from ignis.utils import Utils
+from ignis.variable import Variable
+from asyncio import create_task
 
 
 def DateChip(self):
@@ -17,7 +20,12 @@ def DateChip(self):
             valign="center",
             vertical=True,
         ),
-        css_classes=["tray", "chip", "date"],
+        css_classes=self.visible["date_menu"].bind(
+            "value",
+            lambda x: ["tray", "chip", "date", "active"]
+            if x
+            else ["tray", "chip", "date"],
+        ),
         on_click=lambda x: (
             setattr(
                 self.visible["date_menu"],
@@ -43,12 +51,17 @@ def BatteryChip(self):
             vertical=True,
             valign="center",
         ),
-        css_classes=["tray", "chip", "battery"],
+        css_classes=self.visible["battery_menu"].bind(
+            "value",
+            lambda x: ["tray", "chip", "battery", "active"]
+            if x
+            else ["tray", "chip", "battery"],
+        ),
         on_click=lambda x: (
             setattr(
-                self.visible["batt_menu"],
+                self.visible["battery_menu"],
                 "value",
-                not self.visible["batt_menu"].value,
+                not self.visible["battery_menu"].value,
             ),
             self.menu_visibility(),
         ),
@@ -62,12 +75,16 @@ def BatteryChip(self):
 
 
 def ClockChip(self):
-    return Widget.Button(
+    classes = ["tray", "chip", "clock"]
+    main = Widget.Button(
         child=Widget.Label(
             label=self.time["time"].bind("value"),
             halign="center",
         ),
-        css_classes=["tray", "chip", "clock"],
+        css_classes=self.visible["date_menu"].bind(
+            "value",
+            lambda x: classes + ["active"] if x else classes,
+        ),
         on_click=lambda x: (
             setattr(
                 self.visible["date_menu"],
@@ -77,9 +94,11 @@ def ClockChip(self):
             self.menu_visibility(),
         ),
     )
+    return main
 
 
 def MixerChip(self):
+    classes = ["tray", "chip"]
     return Widget.Button(
         child=Widget.EventBox(
             child=[
@@ -99,7 +118,9 @@ def MixerChip(self):
             valign="center",
             vertical=True,
         ),
-        css_classes=["tray", "chip"],
+        css_classes=self.visible["mixer_menu"].bind(
+            "value", lambda x: classes + ["active"] if x else classes
+        ),
         on_click=lambda x: (
             setattr(
                 self.visible["mixer_menu"],
@@ -112,6 +133,7 @@ def MixerChip(self):
 
 
 def NetChip(self):
+    classes = ["tray", "chip", "network"]
     return Widget.Button(
         child=Widget.Box(
             child=[
@@ -125,12 +147,14 @@ def NetChip(self):
             vertical=True,
             valign="center",
         ),
-        css_classes=["tray", "chip", "network"],
+        css_classes=self.visible["network_menu"].bind(
+            "value", lambda x: classes + ["active"] if x else classes
+        ),
         on_click=lambda x: (
             setattr(
-                self.visible["net_menu"],
+                self.visible["network_menu"],
                 "value",
-                not self.visible["net_menu"].value,
+                not self.visible["network_menu"].value,
             ),
             self.menu_visibility(),
         ),
@@ -138,6 +162,7 @@ def NetChip(self):
 
 
 def BluetoothChip(self):
+    classes = ["tray", "chip", "bluetooth"]
     return Widget.Button(
         child=Widget.Box(
             child=[
@@ -151,7 +176,9 @@ def BluetoothChip(self):
             vertical=True,
             valign="center",
         ),
-        css_classes=["tray", "chip", "bluetooth"],
+        css_classes=self.visible["bluetooth_menu"].bind(
+            "value", lambda x: classes + ["active"] if x else classes
+        ),
         on_click=lambda x: (
             setattr(
                 self.visible["bluetooth_menu"],
@@ -159,5 +186,23 @@ def BluetoothChip(self):
                 not self.visible["bluetooth_menu"].value,
             ),
             self.menu_visibility(),
+        ),
+    )
+
+
+def WallpaperChip(self):
+    return Widget.Button(
+        child=Widget.Box(
+            child=[
+                Widget.Label(
+                    label=" ",
+                ),
+            ],
+            vertical=True,
+            valign="center",
+        ),
+        css_classes=["tray", "chip"],
+        on_click=lambda x: create_task(
+            Utils.exec_sh_async("~/.config/mango/scripts/wallpaper-picker")
         ),
     )

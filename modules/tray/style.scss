@@ -1,6 +1,5 @@
 @use "../../colors.scss" as c;
 $space: .7rem;
-$chip-size: 3rem;
 
 window {
   background: #00000001;
@@ -14,8 +13,7 @@ window {
 
 .tray.chip {
   all: unset;
-  min-width: $chip-size;
-  min-height: calc($chip-size * 2);
+  padding: .6rem;
   border-radius: 10rem;
   border: none;
   background: c.$ui-ab;
@@ -23,6 +21,11 @@ window {
   font-size: 1.5rem;
   font-family: "Space Mono";
   margin-bottom: $space;
+  transition: .3s ease;
+
+  &.active {
+    background: c.$ui-aa;
+  }
 }
 
 tooltip {
@@ -58,22 +61,24 @@ tooltip {
   border: none;
 }
 
-revealer.tray-menu {
-  & .title {
-    all: unset;
-    color: c.$ui-con;
-    background: c.$ui-aa;
-    padding: .4rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    border-radius: calc(1rem + $space);
-    font-family: "Lettera Mono LL Cond Light";
-    margin-bottom: $space;
-    margin-top: $space;
-    background: linear-gradient(30deg, c.$ui-ab, c.$ui-aa 60%);
-  }
+.tray-menu .title {
+  all: unset;
+  color: c.$ui-con;
+  background: c.$ui-aa;
+  padding: .4rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-radius: calc(1rem + $space);
+  font-family: "Lettera Mono LL Cond Light";
+  margin-bottom: $space;
+  /* margin-top: $space; */
+  background: linear-gradient(30deg, c.$ui-ab, darken(c.$ui-ab, 10%) 60%);
+}
 
-  & box .box,
+.tray-menu {
+  margin-bottom: $space;
+
+  & .box,
   calendar {
     background: c.$ui-ab;
     border-radius: calc($space + 1rem);
@@ -113,7 +118,7 @@ box.box.default scale {
   border-radius: 1rem;
 }
 
-.batt box scale {
+.battery box scale {
   margin-right: $space;
 }
 
@@ -124,15 +129,48 @@ button {
   margin-right: $space/2;
   border-radius: 10rem;
   font-size: 1rem;
+  margin-bottom: $space;
+  color: c.$ui-ab;
+  transition: .3s ease;
 }
 
-.wifi-ap,
+.wifi-ap.main,
 .bt.device {
   background: c.$ui-ab;
   margin-bottom: $space;
   padding: $space;
   border-radius: $space*2;
   color: c.$ui-con;
+  transition: .3s ease;
+}
+
+.bt.device:hover {
+  background: c.$ui-aa;
+}
+
+.wifi-ap.action {
+  margin-top: $space;
+
+  & button {
+    margin-bottom: 0;
+  }
+
+  & button:hover {
+    background: c.$ui-con;
+    color: c.$ui-ab;
+  }
+}
+
+entry.wifi-ap {
+  margin-top: $space;
+}
+
+.tray-menu button {
+  color: c.$ui-con;
+}
+
+.tray-menu button:hover {
+  background: c.$ui-ab;
 }
 
 .bt.device .ind {
