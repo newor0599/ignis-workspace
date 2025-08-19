@@ -36,7 +36,7 @@ class Main(logic.Main):
             vertical=True,
             on_click=lambda x: (
                 setattr(icon, "value", ""),
-                setattr(label, "value", f"Confirm {main_label}?"),
+                setattr(label, "value", f"Confirm {main_label.lower()}?"),
                 debounce(),
             ),
             on_right_click=lambda x: (

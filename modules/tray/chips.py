@@ -1,6 +1,5 @@
 from ignis.widgets import Widget
 from ignis.utils import Utils
-from ignis.variable import Variable
 from asyncio import create_task
 
 

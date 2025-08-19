@@ -315,7 +315,7 @@ class BluetoothMenu(BaseMenu):
         )
         self.logic.bt.connect(
             "notify::devices",
-            lambda x, y: (setattr(device_list, "value", self.update_devices()),),
+            lambda x, y: setattr(device_list, "value", self.update_devices()),
         )
         self.content.append(scroll)
         self.content.append(scan_button)

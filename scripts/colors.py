@@ -1,5 +1,5 @@
 from colorthief import ColorThief
-from os import path
+from os import path, system
 
 
 class ColorManager:
@@ -9,7 +9,7 @@ class ColorManager:
     def update(self, wallpaper_path: str = None, theme: int = 0):
         colors = sorted(ColorThief(wallpaper_path).get_palette(2, 60))
         if theme == 1:
-            colors[2], colors[1] = colors[1], colors[2]
+            colors[2], colors[0] = colors[0], colors[2]
 
         # Set ignis theme
         with open(path.expanduser("~/.config/ignis/colors.scss"), "w") as f:
@@ -28,6 +28,7 @@ $wallpaper={wallpaper_path}""")
         with open(path.expanduser("~/.config/mango/colors.conf"), "w") as f:
             f.write(f"""focuscolor=0x{self.rgb2hex(colors[1])[1:]}ff
 bordercolor=0x{self.rgb2hex(colors[2])[1:]}ff""")
+        system("mmsg -d reload_config")
 
         # Set wofi theme
         with open(path.expanduser("~/.config/wofi/colors"), "w") as f:
