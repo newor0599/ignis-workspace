@@ -19,6 +19,7 @@ class BaseMenu:
                 child=self.content,
                 vertical=True,
                 css_classes=["tray-menu", self.title.lower()],
+                hexpand=True,
             ),
             reveal_child=self.logic.visible[self.title.lower() + "_menu"].bind("value"),
             transition_type="slide_down",
@@ -311,7 +312,13 @@ class BluetoothMenu(BaseMenu):
         )
         scan_button = Widget.Button(
             label="Scan",
-            on_click=lambda x: setattr(self.logic.bt, "setup_mode", True),
+            on_click=lambda x: (
+                self.logic.bt.set_setup_mode(True),
+                print("scanning"),
+                print(self.logic.bt.setup_mode),
+                print(self.logic.bt.powered),
+                print(self.logic.bt.state),
+            ),
         )
         self.logic.bt.connect(
             "notify::devices",

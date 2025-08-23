@@ -6,8 +6,11 @@ from ignis.services.audio import AudioService
 from ignis.services.network import NetworkService
 from ignis.services.applications import ApplicationsService
 from ignis.services.bluetooth import BluetoothService
+from ignis.services.fetch import FetchService
 from asyncio import create_task
 import datetime
+from subprocess import Popen, PIPE
+from os import system
 
 
 class BAR:
@@ -84,12 +87,6 @@ class BAR:
         )
 
         # Bluetooth
-        self.bt_connected_length = Variable(value="0")
-        setattr(
-            self.bt_connected_length,
-            "value",
-            str(len(self.bt.connected_devices)),
-        )
         self.bt.connect(
             "notify::connected_devices",
             lambda x, y: (
@@ -100,6 +97,39 @@ class BAR:
                 ),
             ),
         )
+
+        # MangoWC
+        self.mangowc = {
+            "workspace size": 9,
+            "focus workspace": Variable(value=1),
+            "focus title": Variable(value="None"),
+            "focus appid": Variable(value="None"),
+        }
+        self.mangowc["focus workspace"].connect(
+            "notify::value",
+            lambda x, y: (
+                setattr(self.visible["tray"], "value", True),
+                self.debounce_tray_visible(),
+            ),
+        )
+        get_mangowc_task = Utils.ThreadTask(
+            target=self.get_mangowc, callback=lambda x: None
+        )
+        get_mangowc_task.run()
+
+        # About
+        self.about_info = {
+            "os": self.fetch.os_name,
+            "hostname": self.fetch.hostname,
+            "cpu": self.fetch.cpu,
+            "gpu": self.get_gpu(),
+        }
+
+    def get_gpu(self) -> str:
+        gpus = Utils.exec_sh('lspci | grep -E "VGA|3D"').stdout
+        gpu = ""
+        print(gpus)
+        return gpu
 
     def calc_batt_life(self) -> str:
         life = self.laptop_batt.time_remaining / 60
@@ -121,6 +151,7 @@ class BAR:
         self.audio = AudioService.get_default()
         self.applications = ApplicationsService.get_default()
         self.network = NetworkService.get_default()
+        self.fetch = FetchService.get_default()
         self.bt = BluetoothService.get_default()
         self.wifi_device = self.network.wifi.devices[0]
 
@@ -161,11 +192,14 @@ class BAR:
         self.time["day"].value = str(day)
 
     def menu_visibility(self):
-        visible = False
-        for i in self.menus:
-            if self.visible[i].value:
-                visible = True
+        visible = True
+        if all(self.visible[i].value is False for i in self.menus):
+            visible = False
         self.visible["menus"].value = visible
+
+    @Utils.debounce(500)
+    def debounce_tray_visible(self):
+        self.visible["tray"].value = False
 
     def update_sinks(self):
         sinks = self.audio.speakers
@@ -212,3 +246,29 @@ class BAR:
         if device.connected:
             return lambda x: create_task(device.disconnect_from())
         return lambda x: create_task(device.connect_to())
+
+    @Utils.run_in_thread
+    def set_workspace(self, workspace_number: int):
+        if workspace_number < 1 or workspace_number > self.mangowc["workspace size"]:
+            return
+        system(f"mmsg -t {workspace_number}")
+
+    def get_mangowc(self):
+        workspace_daemon = Popen(
+            ["mmsg", "-wtc"],
+            stdout=PIPE,
+            stderr=PIPE,
+            text=True,
+        )
+        for line in workspace_daemon.stdout:
+            out = line.strip().split(" ")
+            if (
+                out[1] == "tag"
+                and out[3] == "1"
+                and self.mangowc["focus workspace"].value != int(out[2].strip())
+            ):
+                self.mangowc["focus workspace"].value = int(out[2].strip())
+            elif out[1] == "title":
+                self.mangowc["focus title"].value = out[-1]
+            elif out[1] == "appid":
+                self.mangowc["focus appid"].value = out[-1]

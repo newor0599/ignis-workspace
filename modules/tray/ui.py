@@ -16,6 +16,7 @@ class BAR(logic.BAR):
                 chips.NetChip(self),
                 chips.BluetoothChip(self),
                 chips.WallpaperChip(self),
+                chips.WorkspaceChip(self),
             ],
             vexpand=True,
             css_classes=["chip-main"],
@@ -49,7 +50,7 @@ class BAR(logic.BAR):
         )
         revealer = Widget.Revealer(
             child=main_tray,
-            reveal_child=self.visible["tray"].bind("value", lambda x: x),
+            reveal_child=self.visible["tray"].bind("value"),
             transition_type="slide_left",
             transition_duration=300,
             css_classes=["tray-revealer"],

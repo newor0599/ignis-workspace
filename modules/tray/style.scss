@@ -38,26 +38,25 @@ tooltip {
   transition: ease .3s;
 }
 
-.chip {
-  &.date.month {
-    font-size: 1.1rem;
-    font-family: "NType 82 Mono";
-    font-weight: 700;
-    margin-top: .6rem;
-  }
+.chip.date.month {
+  font-size: 1.1rem;
+  font-family: "NType 82 Mono";
+  font-weight: 700;
+  margin-top: .6rem;
 }
+
 
 .tray-main {
   background: c.$ui-con;
   /* background: linear-gradient(30deg, c.$ui-ab 10%, c.$ui-con 40%, c.$ui-con 100%); */
   padding: $space;
   margin: 1rem;
-  border-radius: 2.1rem;
+  border-radius: $space*2.5;
 }
 
 .menu-main {
   margin-right: $space;
-  border-radius: 1rem;
+  border-radius: $space;
   border: none;
 }
 
@@ -139,7 +138,7 @@ button {
   background: c.$ui-ab;
   margin-bottom: $space;
   padding: $space;
-  border-radius: $space*2;
+  border-radius: $space*3;
   color: c.$ui-con;
   transition: .3s ease;
 }
@@ -185,4 +184,40 @@ entry {
   padding: $space/2 $space $space/2 $space;
   border-radius: 10rem;
   color: c.$ui-con;
+}
+
+.workspace-dot {
+  padding: 1rem;
+  background: c.$ui-aa;
+  border-radius: 2rem;
+  transition: .3s ease;
+
+  &.active {
+    background: c.$ui-con;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+.tray.chip.about {
+  & button {
+    all: unset;
+    color: c.$ui-con;
+    background: #00000001;
+    border-radius: 5rem;
+  }
+}
+
+.about.info {
+  background: c.$ui-ab;
+  border-radius: 2rem;
+  margin-bottom: $space;
+  color: c.$ui-con;
+  font-size: $space*1.7;
+  font-family: 'Storopia';
+  padding: $space;
+
+  & .icon {
+    margin: 0.5*$space;
+  }
 }

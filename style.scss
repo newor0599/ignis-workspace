@@ -130,3 +130,25 @@ popover.menu contents {
 * {
   outline: none;
 }
+
+scrollbar {
+  background: transparent;
+  border: none;
+}
+
+scrollbar slider {
+  background: colors.$ui-aa;
+}
+
+scrollbar slider:active {
+  background: colors.$ui-ab;
+}
+
+scrollbar trough {
+  background: transparent;
+  background: rgba(colors.$ui-con, .5);
+  border: .1rem solid colors.$ui-ab;
+  outline: none;
+  border-radius: 5rem;
+  transition: .3s ease;
+}
