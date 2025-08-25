@@ -8,7 +8,7 @@
 <img src="preview/v1_p5.png">
 
 #### credits
-[Unsplash: magicpattern](https://unsplash.com/photos/a-blurry-photo-of-a-clock-on-a-wall-87PP9Zd7MNo)
+[Unsplash: magicpattern](https://unsplash.com/photos/a-blurry-photo-of-a-clock-on-a-wall-87PP9Zd7MNo)<br>
 [WC: DreamMaoMao MangoWC](https://github.com/DreamMaoMao/mangowc)
 
 ## Dependencies
