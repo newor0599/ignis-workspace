@@ -23,7 +23,10 @@ if activation_watermark:
 app = IgnisApp.get_default()
 home_path = path.expanduser("~")
 if themer:
-    wp_path = " ".join(Utils.exec_sh("swww query").stdout.split(" ")[7:]).strip()
-    colors.ColorManager().update(wp_path, 0)
+    wp_path = Utils.exec_sh("swww query").stdout.split(" ")[-1].strip()
+    if wp_path != "":
+        colors.ColorManager().update(wp_path, 0)
+    else:
+        print("swww is not running!")
 app.apply_css(f"{home_path}/.config/ignis/style.scss")
 system_notifications.SYSTEM_NOTIF()

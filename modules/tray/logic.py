@@ -1,3 +1,4 @@
+import asyncio
 from ignis.services.bluetooth.device import BluetoothDevice
 from ignis.variable import Variable
 from ignis.utils import Utils
@@ -7,6 +8,7 @@ from ignis.services.network import NetworkService
 from ignis.services.applications import ApplicationsService
 from ignis.services.bluetooth import BluetoothService
 from asyncio import create_task
+import subprocess
 import datetime
 
 
@@ -100,6 +102,34 @@ class BAR:
                 ),
             ),
         )
+
+        # Mangowc
+        self.mangowc = {
+            "focus tag": Variable(value=1),
+            "focus title": Variable(value=None),
+            "focus appid": Variable(value=None),
+        }
+        self.get_mangowc()
+
+    @Utils.run_in_thread
+    def get_mangowc(self):
+        daemon = subprocess.Popen(
+            ["mmsg", "-wtc"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        for i in daemon.stdout:
+            action = i.split(" ")[1].strip()
+            values = i.strip().split(" ")[2:]
+            if action == "tag" and values[1] == "1":
+                self.mangowc["focus tag"].value = int(values[0])
+            elif action in ("title", "appid"):
+                if len(values) > 0:
+                    self.mangowc[f"focus {action}"].value = values[0]
+
+    def set_mango_tag(self, number: int):
+        asyncio.create_task(Utils.exec_sh_async(f"mmsg -t {number}"))
 
     def calc_batt_life(self) -> str:
         life = self.laptop_batt.time_remaining / 60

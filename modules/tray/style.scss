@@ -19,7 +19,7 @@ window {
   background: c.$ui-ab;
   color: c.$ui-con;
   font-size: 1.5rem;
-  font-family: "Space Mono";
+  font-family: "Storopia";
   margin-bottom: $space;
   transition: .3s ease;
 
@@ -27,29 +27,31 @@ window {
     background: c.$ui-aa;
   }
 }
+.tray.chip .icon{
+  font-family:'3270 Nerd Font';
+}
 
 tooltip {
   background: c.$ui-aa;
   border: none;
-  font-family: "Storopia";
   padding: .4rem;
   border-radius: .5rem;
   margin: .2rem;
   transition: ease .3s;
 }
 
-.chip {
-  &.date.month {
+.chip.date.month {
     font-size: 1.1rem;
-    font-family: "NType 82 Mono";
-    font-weight: 700;
     margin-top: .6rem;
   }
+
+.tray.chip.date label{
+  font-family: "NovaMono";
 }
+
 
 .tray-main {
   background: c.$ui-con;
-  /* background: linear-gradient(30deg, c.$ui-ab 10%, c.$ui-con 40%, c.$ui-con 100%); */
   padding: $space;
   margin: 1rem;
   border-radius: 2.1rem;
@@ -185,4 +187,23 @@ entry {
   padding: $space/2 $space $space/2 $space;
   border-radius: 10rem;
   color: c.$ui-con;
+}
+
+.workspace-dot{
+  min-width: $space*2.7;
+  min-height: $space*2.7;
+  border-radius: 10rem;
+  background: c.$ui-con;
+  margin-bottom: $space;
+  transition: .3s ease-out;
+  &.active{
+    min-height: $space*5.4;
+    background: c.$ui-aa;
+  }
+}
+.tray.chip.workspace{
+  background: c.$ui-ab;
+  padding:0;
+  padding-top:$space;
+  /* padding:$space; */
 }

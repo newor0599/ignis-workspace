@@ -7,7 +7,7 @@ from os.path import expanduser
 def NOTIF_POPUP(notif):
     app_name = notif.app_name
     if notif.app_name == "System":
-        icon_path = expanduser("~/.systemui/assets/icons/system.png")
+        icon_path = expanduser("~/.systemui/icons/system.png")
     else:
         icon_path = notif.icon
     if notif.app_name == "":

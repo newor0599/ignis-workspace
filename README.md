@@ -19,7 +19,7 @@
 
 ## V2 Goals
 ### Mango intergration
-- [ ] Workspace number
+- [x] Workspace number
 - [ ] Switch layout
 - [ ] Focused window
 

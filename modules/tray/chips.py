@@ -3,189 +3,107 @@ from ignis.utils import Utils
 from asyncio import create_task
 
 
-def DateChip(self):
-    return Widget.Button(
-        child=Widget.Box(
-            child=[
-                Widget.Label(
-                    label=self.time["month"].bind("value"),
-                    css_classes=["date", "month", "chip"],
-                ),
-                Widget.Label(
-                    label=self.time["day"].bind("value"),
-                    css_classes=["date", "day", "chip"],
-                ),
-            ],
-            valign="center",
-            vertical=True,
-        ),
-        css_classes=self.visible["date_menu"].bind(
-            "value",
-            lambda x: ["tray", "chip", "date", "active"]
-            if x
-            else ["tray", "chip", "date"],
-        ),
-        on_click=lambda x: (
-            setattr(
-                self.visible["date_menu"],
-                "value",
-                not self.visible["date_menu"].value,
+class BaseChip(Widget.Button):
+    def __init__(self, logic, name: str, content: list[Widget]):
+        css = ["tray", "chip", name]
+        if "icon" not in content[0].css_classes:
+            content[0].css_classes += ["icon"]
+        super().__init__(
+            child=Widget.Box(
+                child=content,
+                valign="center",
+                vertical=True,
             ),
-            self.menu_visibility(),
-        ),
+            css_classes=logic.visible[f"{name}_menu"].bind(
+                "value", lambda x: css + ["active"] if x else css
+            ),
+            on_click=lambda x: (
+                setattr(
+                    logic.visible[f"{name}_menu"],
+                    "value",
+                    not logic.visible[f"{name}_menu"].value,
+                ),
+                logic.menu_visibility(),
+            ),
+        )
+
+
+def DateChip(self):
+    return BaseChip(
+        self,
+        "date",
+        [
+            Widget.Label(
+                label=self.time["month"].bind("value"),
+                css_classes=["date", "month", "chip"],
+            ),
+            Widget.Label(
+                label=self.time["day"].bind("value"),
+                css_classes=["date", "day", "chip"],
+            ),
+        ],
     )
 
 
 def BatteryChip(self):
-    return Widget.Button(
-        child=Widget.Box(
-            child=[
-                Widget.Label(
-                    label=self.battery_icon,
-                ),
-                Widget.Label(
-                    label=self.laptop_batt.bind("percent", lambda x: str(int(x)))
-                ),
-            ],
-            vertical=True,
-            valign="center",
-        ),
-        css_classes=self.visible["battery_menu"].bind(
-            "value",
-            lambda x: ["tray", "chip", "battery", "active"]
-            if x
-            else ["tray", "chip", "battery"],
-        ),
-        on_click=lambda x: (
-            setattr(
-                self.visible["battery_menu"],
-                "value",
-                not self.visible["battery_menu"].value,
+    chip = BaseChip(
+        self,
+        "battery",
+        [
+            Widget.Label(
+                label=self.battery_icon,
             ),
-            self.menu_visibility(),
-        ),
-        tooltip_text=self.laptop_batt.bind_many(
-            ["energy_rate", "percent", "time_remaining"],
-            lambda x,
-            y,
-            z: f"{round(y)}%\n{round(x, 2)}w\n{self.calc_batt_life().replace(' hour', 'h').replace(' min', 'm').replace(' left', '')}",
-        ),
+            Widget.Label(label=self.laptop_batt.bind("percent", lambda x: str(int(x)))),
+        ],
     )
+
+    chip.tooltip_text = self.laptop_batt.bind_many(
+        ["energy_rate", "percent", "time_remaining"],
+        lambda x,
+        y,
+        z: f"{round(y)}%\n{round(x, 2)}w\n{self.calc_batt_life().replace(' hour', 'h').replace(' min', 'm').replace(' left', '')}",
+    )
+    return chip
 
 
 def ClockChip(self):
-    classes = ["tray", "chip", "clock"]
-    main = Widget.Button(
-        child=Widget.Label(
-            label=self.time["time"].bind("value"),
-            halign="center",
-        ),
-        css_classes=self.visible["date_menu"].bind(
-            "value",
-            lambda x: classes + ["active"] if x else classes,
-        ),
-        on_click=lambda x: (
-            setattr(
-                self.visible["date_menu"],
-                "value",
-                not self.visible["date_menu"].value,
-            ),
-            self.menu_visibility(),
-        ),
+    return BaseChip(
+        self,
+        "date",
+        [Widget.Label(label=self.time["time"].bind("value"), halign="center")],
     )
-    return main
 
 
 def MixerChip(self):
-    classes = ["tray", "chip"]
-    return Widget.Button(
-        child=Widget.EventBox(
-            child=[
-                Widget.Label(
-                    label=" ",
-                    halign="center",
-                ),
-                Widget.Label(
-                    label=self.audio.speaker.bind(
-                        "volume",
-                        lambda x: str(x),
-                    ),
-                    halign="center",
-                ),
-            ],
-            halign="center",
-            valign="center",
-            vertical=True,
-        ),
-        css_classes=self.visible["mixer_menu"].bind(
-            "value", lambda x: classes + ["active"] if x else classes
-        ),
-        on_click=lambda x: (
-            setattr(
-                self.visible["mixer_menu"],
-                "value",
-                not self.visible["mixer_menu"].value,
-            ),
-            self.menu_visibility(),
-        ),
+    return BaseChip(
+        self,
+        "mixer",
+        [Widget.Label(label=" ", halign="center")],
     )
 
 
 def NetChip(self):
-    classes = ["tray", "chip", "network"]
-    return Widget.Button(
-        child=Widget.Box(
-            child=[
-                Widget.Label(
-                    label=self.network_icon.bind("value"),
-                ),
-                Widget.Label(
-                    label=self.wifi_device.ap.bind("strength", lambda x: str(x))
-                ),
-            ],
-            vertical=True,
-            valign="center",
-        ),
-        css_classes=self.visible["network_menu"].bind(
-            "value", lambda x: classes + ["active"] if x else classes
-        ),
-        on_click=lambda x: (
-            setattr(
-                self.visible["network_menu"],
-                "value",
-                not self.visible["network_menu"].value,
+    return BaseChip(
+        self,
+        "network",
+        [
+            Widget.Label(
+                label=self.network_icon.bind("value"),
             ),
-            self.menu_visibility(),
-        ),
+            Widget.Label(label=self.wifi_device.ap.bind("strength", lambda x: str(x))),
+        ],
     )
 
 
 def BluetoothChip(self):
-    classes = ["tray", "chip", "bluetooth"]
-    return Widget.Button(
-        child=Widget.Box(
-            child=[
-                Widget.Label(
-                    label="󰂯",
-                ),
-                Widget.Label(
-                    label=self.bt_connected_length.bind("value"),
-                ),
-            ],
-            vertical=True,
-            valign="center",
-        ),
-        css_classes=self.visible["bluetooth_menu"].bind(
-            "value", lambda x: classes + ["active"] if x else classes
-        ),
-        on_click=lambda x: (
-            setattr(
-                self.visible["bluetooth_menu"],
-                "value",
-                not self.visible["bluetooth_menu"].value,
+    return BaseChip(
+        self,
+        "bluetooth",
+        [
+            Widget.Label(
+                label="󰂯",
             ),
-            self.menu_visibility(),
-        ),
+        ],
     )
 
 
@@ -195,6 +113,7 @@ def WallpaperChip(self):
             child=[
                 Widget.Label(
                     label=" ",
+                    css_classes=["icon"],
                 ),
             ],
             vertical=True,
@@ -204,4 +123,24 @@ def WallpaperChip(self):
         on_click=lambda x: create_task(
             Utils.exec_sh_async("~/.config/mango/scripts/wallpaper-picker")
         ),
+    )
+
+
+def WorkspaceChip(self):
+    def workspace_dot(number: int):
+        css = ["workspace-dot"]
+        return Widget.EventBox(
+            css_classes=self.mangowc["focus tag"].bind(
+                "value", lambda x: css + ["active"] if x == number else css
+            ),
+            hexpand=False,
+            halign="center",
+            on_click=lambda x: self.set_mango_tag(number),
+        )
+
+    return Widget.Box(
+        child=[workspace_dot(i + 1) for i in range(9)],
+        vertical=True,
+        css_classes=["workspace", "tray", "chip"],
+        # halign="center",
     )
