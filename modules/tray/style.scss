@@ -19,7 +19,7 @@ window {
   background: c.$ui-ab;
   color: c.$ui-con;
   font-size: 1.5rem;
-  font-family: "Space Mono";
+  font-family: "Storopia";
   margin-bottom: $space;
   transition: .3s ease;
 
@@ -27,11 +27,13 @@ window {
     background: c.$ui-aa;
   }
 }
+.tray.chip .icon{
+  font-family:'3270 Nerd Font';
+}
 
 tooltip {
   background: c.$ui-aa;
   border: none;
-  font-family: "Storopia";
   padding: .4rem;
   border-radius: .5rem;
   margin: .2rem;
@@ -39,16 +41,24 @@ tooltip {
 }
 
 .chip.date.month {
+<<<<<<< HEAD
   font-size: 1.1rem;
   font-family: "NType 82 Mono";
   font-weight: 700;
   margin-top: .6rem;
+=======
+    font-size: 1.1rem;
+    margin-top: .6rem;
+  }
+
+.tray.chip.date label{
+  font-family: "NovaMono";
+>>>>>>> ORIG_HEAD
 }
 
 
 .tray-main {
   background: c.$ui-con;
-  /* background: linear-gradient(30deg, c.$ui-ab 10%, c.$ui-con 40%, c.$ui-con 100%); */
   padding: $space;
   margin: 1rem;
   border-radius: $space*2.5;
@@ -186,38 +196,21 @@ entry {
   color: c.$ui-con;
 }
 
-.workspace-dot {
-  padding: 1rem;
-  background: c.$ui-aa;
-  border-radius: 2rem;
-  transition: .3s ease;
-
-  &.active {
-    background: c.$ui-con;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-  }
-}
-
-.tray.chip.about {
-  & button {
-    all: unset;
-    color: c.$ui-con;
-    background: #00000001;
-    border-radius: 5rem;
-  }
-}
-
-.about.info {
-  background: c.$ui-ab;
-  border-radius: 2rem;
+.workspace-dot{
+  min-width: $space*2.7;
+  min-height: $space*2.7;
+  border-radius: 10rem;
+  background: c.$ui-con;
   margin-bottom: $space;
-  color: c.$ui-con;
-  font-size: $space*1.7;
-  font-family: 'Storopia';
-  padding: $space;
-
-  & .icon {
-    margin: 0.5*$space;
+  transition: .3s ease-out;
+  &.active{
+    min-height: $space*5.4;
+    background: c.$ui-aa;
   }
+}
+.tray.chip.workspace{
+  background: c.$ui-ab;
+  padding:0;
+  padding-top:$space;
+  /* padding:$space; */
 }

@@ -6,6 +6,10 @@
 @use "modules/homescreen/style.scss" as homescreen;
 @use "colors.scss" as colors;
 
+*{
+  font-family:"NovaMono";
+}
+
 scale {
   margin: 0;
   padding: 0;

@@ -18,7 +18,7 @@
 - MPris (Individual app control)
 
 ## V2 Goals
-### MangoWC intergration
+### Mango intergration
 - [x] Workspace number
 - [ ] Switch layout
 - [ ] Focused window

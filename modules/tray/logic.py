@@ -1,3 +1,4 @@
+import asyncio
 from ignis.services.bluetooth.device import BluetoothDevice
 from ignis.variable import Variable
 from ignis.utils import Utils
@@ -8,6 +9,7 @@ from ignis.services.applications import ApplicationsService
 from ignis.services.bluetooth import BluetoothService
 from ignis.services.fetch import FetchService
 from asyncio import create_task
+import subprocess
 import datetime
 from subprocess import Popen, PIPE
 from os import system
@@ -98,38 +100,33 @@ class BAR:
             ),
         )
 
-        # MangoWC
+        # Mangowc
         self.mangowc = {
-            "workspace size": 9,
-            "focus workspace": Variable(value=1),
-            "focus title": Variable(value="None"),
-            "focus appid": Variable(value="None"),
+            "focus tag": Variable(value=1),
+            "focus title": Variable(value=None),
+            "focus appid": Variable(value=None),
         }
-        self.mangowc["focus workspace"].connect(
-            "notify::value",
-            lambda x, y: (
-                setattr(self.visible["tray"], "value", True),
-                self.debounce_tray_visible(),
-            ),
-        )
-        get_mangowc_task = Utils.ThreadTask(
-            target=self.get_mangowc, callback=lambda x: None
-        )
-        get_mangowc_task.run()
+        self.get_mangowc()
 
-        # About
-        self.about_info = {
-            "os": self.fetch.os_name,
-            "hostname": self.fetch.hostname,
-            "cpu": self.fetch.cpu,
-            "gpu": self.get_gpu(),
-        }
+    @Utils.run_in_thread
+    def get_mangowc(self):
+        daemon = subprocess.Popen(
+            ["mmsg", "-wtc"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        for i in daemon.stdout:
+            action = i.split(" ")[1].strip()
+            values = i.strip().split(" ")[2:]
+            if action == "tag" and values[1] == "1":
+                self.mangowc["focus tag"].value = int(values[0])
+            elif action in ("title", "appid"):
+                if len(values) > 0:
+                    self.mangowc[f"focus {action}"].value = values[0]
 
-    def get_gpu(self) -> str:
-        gpus = Utils.exec_sh('lspci | grep -E "VGA|3D"').stdout
-        gpu = ""
-        print(gpus)
-        return gpu
+    def set_mango_tag(self, number: int):
+        asyncio.create_task(Utils.exec_sh_async(f"mmsg -t {number}"))
 
     def calc_batt_life(self) -> str:
         life = self.laptop_batt.time_remaining / 60
@@ -246,29 +243,3 @@ class BAR:
         if device.connected:
             return lambda x: create_task(device.disconnect_from())
         return lambda x: create_task(device.connect_to())
-
-    @Utils.run_in_thread
-    def set_workspace(self, workspace_number: int):
-        if workspace_number < 1 or workspace_number > self.mangowc["workspace size"]:
-            return
-        system(f"mmsg -t {workspace_number}")
-
-    def get_mangowc(self):
-        workspace_daemon = Popen(
-            ["mmsg", "-wtc"],
-            stdout=PIPE,
-            stderr=PIPE,
-            text=True,
-        )
-        for line in workspace_daemon.stdout:
-            out = line.strip().split(" ")
-            if (
-                out[1] == "tag"
-                and out[3] == "1"
-                and self.mangowc["focus workspace"].value != int(out[2].strip())
-            ):
-                self.mangowc["focus workspace"].value = int(out[2].strip())
-            elif out[1] == "title":
-                self.mangowc["focus title"].value = out[-1]
-            elif out[1] == "appid":
-                self.mangowc["focus appid"].value = out[-1]

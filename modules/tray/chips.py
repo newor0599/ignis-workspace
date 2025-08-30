@@ -3,29 +3,46 @@ from ignis.utils import Utils
 from asyncio import create_task
 
 
-def BaseChip(name: str, content: list, logic):
-    name = name.lower()
-    css = ["tray", "chip", name]
-    btn = Widget.Button(
-        child=Widget.Box(
-            child=content,
-            vertical=True,
-            valign="center",
-        ),
-        css_classes=logic.visible[f"{name}_menu"].bind(
-            "value",
-            lambda x: css + ["active"] if x else css,
-        ),
-        on_click=lambda x: (
-            setattr(
-                logic.visible[f"{name}_menu"],
-                "value",
-                not logic.visible[f"{name}_menu"].value,
+class BaseChip(Widget.Button):
+    def __init__(self, logic, name: str, content: list[Widget]):
+        css = ["tray", "chip", name]
+        if "icon" not in content[0].css_classes:
+            content[0].css_classes += ["icon"]
+        super().__init__(
+            child=Widget.Box(
+                child=content,
+                valign="center",
+                vertical=True,
             ),
-            logic.menu_visibility(),
-        ),
+            css_classes=logic.visible[f"{name}_menu"].bind(
+                "value", lambda x: css + ["active"] if x else css
+            ),
+            on_click=lambda x: (
+                setattr(
+                    logic.visible[f"{name}_menu"],
+                    "value",
+                    not logic.visible[f"{name}_menu"].value,
+                ),
+                logic.menu_visibility(),
+            ),
+        )
+
+
+def DateChip(self):
+    return BaseChip(
+        self,
+        "date",
+        [
+            Widget.Label(
+                label=self.time["month"].bind("value"),
+                css_classes=["date", "month", "chip"],
+            ),
+            Widget.Label(
+                label=self.time["day"].bind("value"),
+                css_classes=["date", "day", "chip"],
+            ),
+        ],
     )
-    return btn
 
 
 def DateChip(logic):
@@ -46,72 +63,64 @@ def DateChip(logic):
 
 
 def BatteryChip(self):
-    return BaseChip(
+    chip = BaseChip(
+        self,
         "battery",
         [
-            Widget.Label(label=self.battery_icon),
+            Widget.Label(
+                label=self.battery_icon,
+            ),
             Widget.Label(label=self.laptop_batt.bind("percent", lambda x: str(int(x)))),
         ],
-        self,
     )
+
+    chip.tooltip_text = self.laptop_batt.bind_many(
+        ["energy_rate", "percent", "time_remaining"],
+        lambda x,
+        y,
+        z: f"{round(y)}%\n{round(x, 2)}w\n{self.calc_batt_life().replace(' hour', 'h').replace(' min', 'm').replace(' left', '')}",
+    )
+    return chip
 
 
 def ClockChip(self):
     return BaseChip(
-        "date",
-        [
-            Widget.Label(
-                label=self.time["time"].bind("value"),
-                halign="center",
-            )
-        ],
         self,
+        "date",
+        [Widget.Label(label=self.time["time"].bind("value"), halign="center")],
     )
 
 
 def MixerChip(self):
     return BaseChip(
-        "mixer",
-        [
-            Widget.Label(
-                label=" ",
-                halign="center",
-            ),
-            Widget.Label(
-                label=self.audio.speaker.bind(
-                    "volume",
-                    lambda x: str(x),
-                ),
-                halign="center",
-            ),
-        ],
         self,
+        "mixer",
+        [Widget.Label(label=" ", halign="center")],
     )
 
 
 def NetChip(self):
     return BaseChip(
+        self,
         "network",
         [
-            Widget.Label(label=self.network_icon.bind("value")),
             Widget.Label(
-                label=self.wifi_device.ap.bind(
-                    "strength",
-                    lambda x: str(x),
-                )
+                label=self.network_icon.bind("value"),
             ),
+            Widget.Label(label=self.wifi_device.ap.bind("strength", lambda x: str(x))),
         ],
-        self,
     )
 
 
 def BluetoothChip(self):
     return BaseChip(
+        self,
         "bluetooth",
         [
-            Widget.Label(label="󰂯"),
+            Widget.Label(
+                label="󰂯",
+            ),
         ],
-        self,
     )
 
 
@@ -121,6 +130,7 @@ def WallpaperChip(self):
             child=[
                 Widget.Label(
                     label=" ",
+                    css_classes=["icon"],
                 ),
             ],
             vertical=True,
@@ -135,35 +145,19 @@ def WallpaperChip(self):
 
 def WorkspaceChip(self):
     def workspace_dot(number: int):
+        css = ["workspace-dot"]
         return Widget.EventBox(
-            css_classes=self.mangowc["focus workspace"].bind(
-                "value",
-                lambda x: ["workspace-dot", "active"]
-                if x == number
-                else ["workspace-dot"],
+            css_classes=self.mangowc["focus tag"].bind(
+                "value", lambda x: css + ["active"] if x == number else css
             ),
-            on_click=lambda x: self.set_workspace(number),
-            on_scroll_up=lambda x: self.set_workspace(
-                self.mangowc["focus workspace"].value + 1
-            ),
-            on_scroll_down=lambda x: self.set_workspace(
-                self.mangowc["focus workspace"].value - 1
-            ),
+            hexpand=False,
+            halign="center",
+            on_click=lambda x: self.set_mango_tag(number),
         )
 
-    return Widget.EventBox(
-        child=[workspace_dot(i + 1) for i in range(self.mangowc["workspace size"])],
-        spacing=10,
+    return Widget.Box(
+        child=[workspace_dot(i + 1) for i in range(9)],
         vertical=True,
-        css_classes=["tray", "chip", "workspace"],
-        on_scroll_up=lambda x: self.set_workspace(
-            self.mangowc["focus workspace"].value + 1
-        ),
-        on_scroll_down=lambda x: self.set_workspace(
-            self.mangowc["focus workspace"].value - 1
-        ),
+        css_classes=["workspace", "tray", "chip"],
+        # halign="center",
     )
-
-
-def AboutChip(self):
-    return BaseChip("about", [Widget.Button(label="󰋼 ")], self)
