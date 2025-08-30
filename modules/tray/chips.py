@@ -45,23 +45,6 @@ def DateChip(self):
     )
 
 
-def DateChip(logic):
-    return BaseChip(
-        "date",
-        [
-            Widget.Label(
-                label=logic.time["month"].bind("value"),
-                css_classes=["date", "month", "chip"],
-            ),
-            Widget.Label(
-                label=logic.time["day"].bind("value"),
-                css_classes=["date", "day", "chip"],
-            ),
-        ],
-        logic,
-    )
-
-
 def BatteryChip(self):
     chip = BaseChip(
         self,
