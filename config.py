@@ -11,7 +11,7 @@ from ignis.app import IgnisApp
 from os import path
 
 activation_watermark = 0
-themer = 1
+themer = 0
 tray()
 popup()
 notif()

@@ -24,7 +24,6 @@ $ui-con:rgb{rgb[0]};""")
         with open(path.expanduser("~/.config/mango/colors.conf"), "w") as f:
             f.write(f"""focuscolor=0x{hexa[1]}ff
 bordercolor=0x{hexa[2]}ff""")
-        system("mmsg -d reload_config")
         print("Mango theme configured!")
 
         # Set wofi theme
@@ -59,6 +58,10 @@ color14 #95e6cb
 color15 #{hexa[2]}
 selection_foreground #{hexa[0]}""")
         print("Kitty theme configured!")
+
+        # Reload applications
+        system("/bin/bash -c 'kill -SIGUSR1 \"$KITTY_PID\"'")
+        system("mmsg -d reload_config")
 
     def rgb2hex(self, rgb: list[int]):
         r = max(0, min(255, rgb[0]))
