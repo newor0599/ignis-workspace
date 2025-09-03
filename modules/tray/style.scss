@@ -55,7 +55,7 @@ tooltip {
   background: c.$ui-con;
   padding: $space;
   margin: 1rem;
-  border-radius: $space*2.5;
+  border-radius: $space*3;
 }
 
 .menu-main {
@@ -69,12 +69,10 @@ tooltip {
   color: c.$ui-con;
   background: c.$ui-aa;
   padding: .4rem;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  border-radius: calc(1rem + $space);
-  font-family: "Lettera Mono LL Cond Light";
+  border-radius: 20rem;
   margin-bottom: $space;
-  /* margin-top: $space; */
   background: linear-gradient(30deg, c.$ui-ab, darken(c.$ui-ab, 10%) 60%);
 }
 

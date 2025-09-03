@@ -26,11 +26,11 @@ class BAR(logic.BAR):
             child=Widget.Scroll(
                 child=Widget.Box(
                     child=[
-                        menus.DateMenu(self).menu(),
-                        menus.BatteryMenu(self).menu(),
-                        menus.MixerMenu(self).menu(),
-                        menus.NetworkMenu(self).menu(),
-                        menus.BluetoothMenu(self).menu(),
+                        menus.DateMenu(self),
+                        menus.BatteryMenu(self),
+                        menus.MixerMenu(self),
+                        menus.NetworkMenu(self),
+                        menus.BluetoothMenu(self),
                     ],
                     vertical=True,
                     hexpand=True,

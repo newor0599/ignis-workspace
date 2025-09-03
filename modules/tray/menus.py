@@ -5,82 +5,71 @@ from ignis.variable import Variable
 from asyncio import create_task
 
 
-class BaseMenu:
-    def __init__(self, logic, title: str):
+class BaseMenu(Widget.Revealer):
+    def __init__(self, logic, title: str, content: list[Widget]):
         self.logic = logic
         self.title = title
         self.content = [
             Widget.Label(label=self.title.title(), css_classes=["title"]),
-        ]
-
-    def menu(self) -> Widget.Revealer:
-        revealer = Widget.Revealer(
-            child=Widget.Box(
-                child=self.content,
-                vertical=True,
-                css_classes=["tray-menu", self.title.lower()],
-                hexpand=True,
-            ),
+        ] + content
+        box = Widget.Box(
+            child=self.content,
+            vertical=True,
+            css_classes=["tray-menu", self.title.lower()],
+            hexpand=True,
+        )
+        super().__init__(
+            child=box,
             reveal_child=self.logic.visible[self.title.lower() + "_menu"].bind("value"),
             transition_type="slide_down",
         )
-        return revealer
 
 
-class DateMenu(BaseMenu):
-    def __init__(self, logic):
-        super().__init__(logic, "date")
-        cal = Widget.Calendar()
-        self.content.append(cal)
+def DateMenu(self):
+    return BaseMenu(self, "date", [Widget.Calendar()])
 
 
-class BatteryMenu(BaseMenu):
-    def __init__(self, logic):
-        super().__init__(logic, "battery")
-        percentage = Widget.Box(
-            child=[
-                Widget.Label(label=self.logic.battery_icon, css_classes=["icon"]),
-                Widget.Scale(
-                    value=self.logic.laptop_batt.bind("percent"),
-                    css_classes=["scale"],
-                    hexpand=True,
-                    sensitive=False,
-                ),
-                Widget.Label(
-                    label=self.logic.laptop_batt.bind(
-                        "percent", lambda x: f"{int(x)}%"
-                    ),
-                    css_classes=["percent"],
-                ),
-            ],
-            css_classes=["box"],
-        )
-        time = Widget.Box(
-            child=[
-                Widget.Label(label=" ", css_classes=["icon"]),
-                Widget.Label(label=self.logic.battery_life.bind("value")),
-            ],
-            css_classes=["box"],
-        )
-        power = Widget.Box(
-            child=[
-                Widget.Label(label="󱐋 ", css_classes=["icon"]),
-                Widget.Label(
-                    label=self.logic.laptop_batt.bind(
-                        "energy-rate", lambda x: str(round(x, 2)) + "w"
-                    )
-                ),
-            ],
-            css_classes=["box"],
-        )
-        self.content.append(percentage)
-        self.content.append(time)
-        self.content.append(power)
+def BatteryMenu(self):
+    percentage = Widget.Box(
+        child=[
+            Widget.Label(label=self.battery_icon, css_classes=["icon"]),
+            Widget.Scale(
+                value=self.laptop_batt.bind("percent"),
+                css_classes=["scale"],
+                hexpand=True,
+                sensitive=False,
+            ),
+            Widget.Label(
+                label=self.laptop_batt.bind("percent", lambda x: f"{int(x)}%"),
+                css_classes=["percent"],
+            ),
+        ],
+        css_classes=["box"],
+    )
+    time = Widget.Box(
+        child=[
+            Widget.Label(label=" ", css_classes=["icon"]),
+            Widget.Label(label=self.battery_life.bind("value")),
+        ],
+        css_classes=["box"],
+    )
+    power = Widget.Box(
+        child=[
+            Widget.Label(label="󱐋 ", css_classes=["icon"]),
+            Widget.Label(
+                label=self.laptop_batt.bind(
+                    "energy-rate", lambda x: str(round(x, 2)) + "w"
+                )
+            ),
+        ],
+        css_classes=["box"],
+    )
+    return BaseMenu(self, "battery", [percentage, time, power])
 
 
 class MixerMenu(BaseMenu):
     def __init__(self, logic):
-        super().__init__(logic, "mixer")
+        self.logic = logic
         speaker_list = Widget.DropDown(
             items=self.logic.sink_list.bind("value"),
             on_selected=lambda x, y: setattr(
@@ -134,7 +123,7 @@ class MixerMenu(BaseMenu):
                 Widget.Box(child=self.get_app_list(x.apps)),
             ),
         )
-        self.content += [default_speaker, default_mic, apps_control]
+        super().__init__(logic, "mixer", [default_speaker, default_mic, apps_control])
 
     def AppMixer(self, stream: Stream):
         return Widget.Box(
@@ -188,8 +177,7 @@ class MixerMenu(BaseMenu):
 
 class NetworkMenu(BaseMenu):
     def __init__(self, logic):
-        super().__init__(logic, "network")
-
+        self.logic = logic
         wifi_list = Variable(value=[])
         setattr(wifi_list, "value", self.update_wifi())
         self.logic.wifi_device.connect(
@@ -207,8 +195,7 @@ class NetworkMenu(BaseMenu):
             on_click=lambda x: create_task(self.logic.wifi_device.scan()),
         )
 
-        self.content.append(scroll)
-        self.content.append(scan_btn)
+        super().__init__(logic, "network", [scroll, scan_btn])
 
     def WifiPoint(self, wifi_ap):
         # Widgets
@@ -259,9 +246,7 @@ class NetworkMenu(BaseMenu):
         )
         actions = Widget.Revealer(
             child=Widget.Box(
-                child=[
-                    connection,
-                ],
+                child=[connection],
                 css_classes=["wifi-ap", "action"],
             ),
             reveal_child=expand.bind("value", lambda x: x["action"]),
@@ -304,7 +289,7 @@ class NetworkMenu(BaseMenu):
 
 class BluetoothMenu(BaseMenu):
     def __init__(self, logic):
-        super().__init__(logic, "bluetooth")
+        self.logic = logic
         device_list = Variable(value=[])
         scroll = Widget.Scroll(
             child=Widget.Box(child=device_list.bind("value"), vertical=True),
@@ -324,8 +309,7 @@ class BluetoothMenu(BaseMenu):
             "notify::devices",
             lambda x, y: setattr(device_list, "value", self.update_devices()),
         )
-        self.content.append(scroll)
-        self.content.append(scan_button)
+        super().__init__(logic, "bluetooth", [scroll, scan_button])
 
     def device(self, device: BluetoothDevice):
         icon = Variable(value="")

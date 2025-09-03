@@ -142,5 +142,4 @@ def WorkspaceChip(self):
         child=[workspace_dot(i + 1) for i in range(9)],
         vertical=True,
         css_classes=["workspace", "tray", "chip"],
-        # halign="center",
     )
