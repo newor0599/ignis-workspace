@@ -39,7 +39,7 @@ class SYSTEM_NOTIF:
         if sound:
             asyncio.create_task(
                 Utils.exec_sh_async(
-                    "cvlc ~/.systemui/assets/sound/notification.mp3 --no-loop --no-repeat --play-and-exit"
+                    "cvlc ~/.systemui/sound/notification.mp3 --no-loop --no-repeat --play-and-exit"
                 )
             )
 
