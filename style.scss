@@ -27,7 +27,6 @@ scale {
 
     highlight {
       background: colors.$ui-aa;
-      /* background: linear-gradient(120deg, colors.$ui-ab, colors.$ui-aa 40%, colors.$ui-aa 60%, colors.$ui-ab 100%); */
       border: none;
       border-radius: 100px;
       min-width: 0px;
@@ -36,6 +35,14 @@ scale {
   }
 }
 
+calendar grid label.day-number:selected {
+  all: unset;
+  border-radius: 5rem;
+  background: rgba(colors.$ui-aa,.5);
+  border: none;
+  color: colors.$ui-con;
+  outline: none;
+}
 calendar {
   all: unset;
 
@@ -78,14 +85,6 @@ calendar {
   }
 }
 
-calendar grid label.day-number:selected {
-  all: unset;
-  border-radius: 5rem;
-  background: rgba(colors.$ui-aa, .5);
-  border: none;
-  color: colors.$ui-con;
-  outline: none;
-}
 
 dropdown,
 dropdown *,
