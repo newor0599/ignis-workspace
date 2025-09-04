@@ -33,9 +33,17 @@
 - [ ] Theme setting
 - [ ] About PC
 
-### Better theme generation
+### Theme generation
 - [ ] Ensure distinct color
 
 ### Battery customization (tlp)
 - [ ] Battery profile
 - [ ] Battery threshold
+
+### System notifications
+- [ ] Wi-Fi Connection
+- [ ] Bluetooth Connection
+
+### Interaction feedback
+- [ ] Wi-Fi status
+- [ ] Bluetooth status
