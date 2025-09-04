@@ -1,5 +1,5 @@
 from colorthief import ColorThief
-from os import path, system
+from os import path
 from subprocess import run
 
 
@@ -59,9 +59,19 @@ color15 #{hexa[2]}
 selection_foreground #{hexa[0]}""")
         print("Kitty theme configured!")
 
+        # gtklock theme
+        gtklock = f"""@define-color gtklock_a #{hexa[2]};@define-color gtklock_b #{hexa[1]};@define-color gtklock_c #{hexa[0]};window{{background:url("{path.expanduser(wallpaper_path)}");background-position:center;background-repeat:no-repeat;}}\n"""
+        print(path.expanduser(wallpaper_path))
+        with open(path.expanduser("~/.config/gtklock/style.css"), "r") as f:
+            lines = f.readlines()
+        lines[0] = gtklock
+        with open(path.expanduser("~/.config/gtklock/style.css"), "w") as f:
+            f.writelines(lines)
+        print("GTKLock theme configured!")
+
         # Reload applications
-        system("/bin/bash -c 'kill -SIGUSR1 \"$KITTY_PID\"'")
-        system("mmsg -d reload_config")
+        run(["/bin/bash", "-c", "pkill -SIGUSR1 kitty"])
+        run(["mmsg", "-d", "reload_config"])
 
     def rgb2hex(self, rgb: list[int]):
         r = max(0, min(255, rgb[0]))

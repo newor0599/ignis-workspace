@@ -7,7 +7,7 @@ class Main:
             "shutdown": "systemctl poweroff",
             "reboot": "systemctl reboot",
             "logout": "mmsg -q",
-            "lock": "hyprlock",
+            "lock": "gtklock -d",
             "sleep": "systemctl suspend",
         }
         self.show = Variable(value=False)
