@@ -47,3 +47,6 @@
 ### Interaction feedback
 - [ ] Wi-Fi status
 - [ ] Bluetooth status
+
+### Error handling
+- [ ] No internet device
