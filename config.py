@@ -28,5 +28,6 @@ if themer:
         colors.ColorManager().update(wp_path, 0)
     else:
         print("swww is not running!")
+app.apply_css(f"{home_path}/.config/ignis/colors.scss")
 app.apply_css(f"{home_path}/.config/ignis/style.scss")
 system_notifications.SYSTEM_NOTIF()

@@ -150,7 +150,9 @@ class BAR:
         self.network = NetworkService.get_default()
         self.fetch = FetchService.get_default()
         self.bt = BluetoothService.get_default()
-        self.wifi_device = self.network.wifi.devices[0]
+        self.wifi_device = (
+            self.network.wifi.devices[0] if len(self.network.wifi.devices) > 0 else None
+        )
 
     def get_app_icon(self, app_name: str):
         apps = self.applications.apps
